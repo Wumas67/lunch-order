@@ -301,6 +301,29 @@
             font-size: 1.1em;
         }
 
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+
+        .add-to-cart-btn:active {
+            transform: translateY(0);
+        }
+
         .cart-summary {
             position: sticky;
             top: 20px;
@@ -989,6 +1012,7 @@
                     <div class="qty-display">1</div>
                     <button class="qty-btn plus">+</button>
                 </div>
+                <button class="add-to-cart-btn" style="display: none;">✓ 加入訂單</button>
             `;
 
             div.innerHTML = html;
@@ -997,6 +1021,7 @@
             div.addEventListener('click', function(e) {
                 if (e.target.classList.contains('qty-btn') || 
                     e.target.classList.contains('option-select') ||
+                    e.target.classList.contains('add-to-cart-btn') ||
                     e.target.closest('.options-group')) {
                     e.stopPropagation();
                     return;
@@ -1006,6 +1031,7 @@
 
             const minusBtn = div.querySelector('.minus');
             const plusBtn = div.querySelector('.plus');
+            const addBtn = div.querySelector('.add-to-cart-btn');
 
             minusBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1015,6 +1041,22 @@
             plusBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 changeQty(div, 1, restaurant, item, category);
+            });
+
+            // 加入訂單按鈕
+            addBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const qty = parseInt(div.querySelector('.qty-display').textContent);
+                addToCart(div, restaurant, item, qty);
+                
+                // 顯示提示
+                const originalText = addBtn.textContent;
+                addBtn.textContent = '✓ 已加入';
+                addBtn.style.background = '#28a745';
+                setTimeout(() => {
+                    addBtn.textContent = originalText;
+                    addBtn.style.background = '';
+                }, 1000);
             });
 
             // 為下拉選單添加事件監聽
@@ -1039,18 +1081,20 @@
         function toggleItem(element, restaurant, item, category) {
             const qtyControl = element.querySelector('.quantity-control');
             const optionsGroup = element.querySelector('.options-group');
+            const addBtn = element.querySelector('.add-to-cart-btn');
             
             if (!element.classList.contains('selected')) {
                 element.classList.add('selected');
                 qtyControl.classList.add('active');
                 if (optionsGroup) optionsGroup.classList.add('active');
+                if (addBtn) addBtn.style.display = 'block';
                 element.querySelector('.qty-display').textContent = '1';
-                addToCart(element, restaurant, item, 1);
             } else {
                 element.classList.remove('selected');
                 qtyControl.classList.remove('active');
                 if (optionsGroup) optionsGroup.classList.remove('active');
-                removeFromCart(element, restaurant, item);
+                if (addBtn) addBtn.style.display = 'none';
+                // 不自動從購物車移除，讓用戶自己決定
             }
         }
 
@@ -1059,17 +1103,18 @@
             let qty = parseInt(qtyDisplay.textContent) + delta;
             
             if (qty < 1) {
-                qty = 0;
-                element.classList.remove('selected');
-                element.querySelector('.quantity-control').classList.remove('active');
-                const optionsGroup = element.querySelector('.options-group');
-                if (optionsGroup) optionsGroup.classList.remove('active');
-                removeFromCart(element, restaurant, item);
-                return;
+                qty = 1; // 最小數量為 1
             }
             
             qtyDisplay.textContent = qty;
-            updateCartQuantity(element, restaurant, item, qty);
+            
+            // 如果購物車中已有此項目，自動更新數量
+            const key = getItemKey(element, restaurant, item);
+            const cartItem = cart.find(item => item.key === key);
+            if (cartItem) {
+                cartItem.qty = qty;
+                updateCartDisplay();
+            }
         }
 
         function getSelectedOptions(element, item) {
@@ -1169,7 +1214,7 @@
             
             if (positanoItems.length > 0) {
                 html += '<div style="font-weight: 600; color: #667eea; margin: 10px 0;">🍝 Positano</div>';
-                positanoItems.forEach(item => {
+                positanoItems.forEach((item, index) => {
                     const subtotal = item.price * item.qty;
                     total += subtotal;
                     html += `
@@ -1178,6 +1223,7 @@
                             ${item.options ? `<div class="cart-item-option">${item.options}</div>` : ''}
                             <div class="cart-item-qty">數量: ${item.qty}</div>
                             <div class="cart-item-price">$${subtotal}</div>
+                            <button class="remove-btn" onclick="removeCartItem('${item.key}')">刪除</button>
                         </div>
                     `;
                 });
@@ -1185,7 +1231,7 @@
             
             if (meetsecretItems.length > 0) {
                 html += '<div style="font-weight: 600; color: #667eea; margin: 10px 0;">🥗 Meet Secret</div>';
-                meetsecretItems.forEach(item => {
+                meetsecretItems.forEach((item, index) => {
                     const subtotal = item.price * item.qty;
                     total += subtotal;
                     html += `
@@ -1194,6 +1240,7 @@
                             ${item.options ? `<div class="cart-item-option">${item.options}</div>` : ''}
                             <div class="cart-item-qty">數量: ${item.qty}</div>
                             <div class="cart-item-price">$${subtotal}</div>
+                            <button class="remove-btn" onclick="removeCartItem('${item.key}')">刪除</button>
                         </div>
                     `;
                 });
@@ -1203,6 +1250,25 @@
             totalAmount.textContent = `$${total}`;
             cartTotal.style.display = 'flex';
             submitBtn.disabled = false;
+        }
+
+        // 從購物車刪除項目
+        function removeCartItem(key) {
+            const item = cart.find(cartItem => cartItem.key === key);
+            if (item && item.element) {
+                // 重置菜單項目的狀態
+                item.element.classList.remove('selected');
+                const qtyControl = item.element.querySelector('.quantity-control');
+                const optionsGroup = item.element.querySelector('.options-group');
+                if (qtyControl) qtyControl.classList.remove('active');
+                if (optionsGroup) optionsGroup.classList.remove('active');
+                const qtyDisplay = item.element.querySelector('.qty-display');
+                if (qtyDisplay) qtyDisplay.textContent = '1';
+            }
+            
+            // 從購物車移除
+            cart = cart.filter(cartItem => cartItem.key !== key);
+            updateCartDisplay();
         }
 
         function switchRestaurant(restaurant) {
@@ -1293,81 +1359,69 @@
         }
 
         function sendToGoogleForm(orderData) {
-            // Google Form URL - 請建立表單後替換
-            // 表單範例 URL：https://docs.google.com/forms/d/e/1FAIpQLSe.../formResponse
-            const formUrl = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+            // 使用 Google Apps Script Web App URL
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbzqjmw84p8Y_tHnPb9OwL6r015Qiz1tJYyRBgSqNcoWdUagK5v5P_UIZ1s8j0IQ9u2n/exec';
             
-            const formData = new FormData();
-            
-            // 請在建立 Google 表單後，替換以下 entry.XXXXXX 為實際的欄位 ID
-            // 建議的表單欄位：
-            // 1. 訂購時間
-            // 2. 訂購人姓名
-            // 3. 部門
-            // 4. 分機
-            // 5. 餐廳
-            // 6. 餐點名稱
-            // 7. 選項（外帶/內用、口味、飲料等）
-            // 8. 數量
-            // 9. 單價
-            // 10. 小計
-            // 11. 訂單總額
-            // 12. 備註
-            
-            // 將每個餐點分別提交
-            cart.forEach((item, index) => {
+            // 準備要發送的訂單數據
+            const orderItems = orderData.items.map(item => {
                 const restaurantName = item.restaurant === 'positano' ? 'Positano 波希塔諾' : 'Meet Secret 遇見秘境';
-                
-                // 如果要每筆資料都單獨送出，可以用這個方式
-                const itemFormData = new FormData();
-                itemFormData.append('entry.1111111', orderData.timestamp); // 訂購時間
-                itemFormData.append('entry.2222222', orderData.userName);  // 姓名
-                itemFormData.append('entry.3333333', orderData.userDept);  // 部門
-                itemFormData.append('entry.4444444', orderData.userExt || '');   // 分機
-                itemFormData.append('entry.5555555', restaurantName);      // 餐廳
-                itemFormData.append('entry.6666666', item.name);           // 餐點名稱
-                itemFormData.append('entry.7777777', item.options || ''); // 選項
-                itemFormData.append('entry.8888888', item.qty);            // 數量
-                itemFormData.append('entry.9999999', item.price);          // 單價
-                itemFormData.append('entry.1010101', item.price * item.qty); // 小計
-                itemFormData.append('entry.1111112', index === 0 ? orderData.total : ''); // 總額(只在第一筆顯示)
-                itemFormData.append('entry.1212121', index === 0 ? orderData.userNote : ''); // 備註(只在第一筆顯示)
-                
-                // 送出每筆餐點資料
-                fetch(formUrl, {
+                return {
+                    timestamp: orderData.timestamp,
+                    userName: orderData.userName,
+                    userDept: orderData.userDept,
+                    userExt: orderData.userExt || '',
+                    restaurant: restaurantName,
+                    dishName: item.name,
+                    options: item.options || '',
+                    quantity: item.qty,
+                    unitPrice: item.price,
+                    subtotal: item.price * item.qty,
+                    orderTotal: orderData.total,
+                    note: orderData.userNote || ''
+                };
+            });
+            
+            // 發送每個餐點資料到 Google Apps Script
+            const promises = orderItems.map((itemData, index) => {
+                return fetch(scriptUrl, {
                     method: 'POST',
                     mode: 'no-cors',
-                    body: itemFormData
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'submitOrder',
+                        data: {
+                            ...itemData,
+                            // 只在第一筆顯示總額和備註
+                            orderTotal: index === 0 ? itemData.orderTotal : '',
+                            note: index === 0 ? itemData.note : ''
+                        }
+                    })
                 }).catch(error => {
-                    console.error('Error submitting item:', error);
+                    console.error('發送項目時出錯:', error);
                 });
             });
             
-            // 同時發送 Email 通知
-            sendEmailNotification(orderData);
-            
-            // 顯示成功訊息
-            setTimeout(() => {
+            // 等待所有請求完成
+            Promise.all(promises).then(() => {
+                console.log('所有訂單項目已送出');
                 closeModal();
                 showSuccessMessage();
                 resetForm();
-            }, 1000);
+            }).catch(error => {
+                console.error('發送訂單失敗:', error);
+                // 即使出錯也顯示成功訊息（因為 no-cors 模式）
+                closeModal();
+                showSuccessMessage();
+                resetForm();
+            });
         }
 
         function sendEmailNotification(orderData) {
-            // 使用 Google Apps Script 發送 Email
-            // 您需要建立一個 Google Apps Script Web App 來處理 Email 發送
-            // 這裡提供範例程式碼框架
-            
-            const emailData = {
-                to: 'wumas67@gmail.com',
-                subject: `【午餐團訂】${orderData.userName} 的訂單 - ${orderData.timestamp}`,
-                body: generateEmailBody(orderData)
-            };
-            
-            // 實際的 Email 發送需要透過 Google Apps Script
-            // 請參考下方的 Apps Script 範例程式碼
-            console.log('Email 通知資料：', emailData);
+            // Email 通知已整合在 Google Apps Script 中
+            // 不需要額外處理
+            console.log('Email 通知將由 Google Apps Script 自動發送');
         }
 
         function generateEmailBody(orderData) {
