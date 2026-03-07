@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公司中餐團訂系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .header p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .notice {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+
+        .notice strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .user-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .restaurant-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .menu-section {
+            display: none;
+        }
+
+        .menu-section.active {
+            display: block;
+        }
+
+        .category {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .category h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .menu-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .menu-item {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .menu-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .menu-item.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .menu-item > *:not(.options-group):not(.quantity-control) {
+            cursor: pointer;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 1.05em;
+            color: #333;
+            flex: 1;
+        }
+
+        .item-prices {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        .price-row {
+            color: #e74c3c;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .price-label {
+            font-size: 0.75em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .item-description {
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+
+        .options-group {
+            display: none;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .options-group.active {
+            display: block;
+        }
+
+        .options-group label {
+            display: block;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+            pointer-events: none;
+        }
+
+        .options-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9em;
+            background: white;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .options-group select:last-child {
+            margin-bottom: 0;
+        }
+
+        .options-group select:hover {
+            border-color: #667eea;
+        }
+
+        .options-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+
+        .quantity-control {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .quantity-control.active {
+            display: flex;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #667eea;
+            background: white;
+            border-radius: 5px;
+            color: #667eea;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .qty-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .qty-display {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .cart-summary {
+            position: sticky;
+            top: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .cart-summary h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .cart-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .cart-item-option {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .cart-item-qty {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .cart-item-price {
+            color: #e74c3c;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75em;
+            margin-top: 5px;
+        }
+
+        .cart-total {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .modal-btn.confirm {
+            background: #667eea;
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-summary {
+                position: static;
+                max-height: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .user-info {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-items {
+                grid-template-columns: 1fr;
+            }
+
+            .restaurant-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍱 公司中餐團訂系統</h1>
+            <p>請選擇餐廳並填寫訂餐資訊</p>
+            
+            <div class="notice">
+                <strong>📋 訂餐說明：</strong>
+                請填寫您的姓名、部門和分機，選擇餐點後按送出訂單。所有訂單將自動彙整到統一表單並寄送通知給負責人。
+            </div>
+
+            <div class="user-info">
+                <div class="form-group">
+                    <label>姓名 *</label>
+                    <input type="text" id="userName" placeholder="請輸入您的姓名" required>
+                </div>
+                <div class="form-group">
+                    <label>部門 *</label>
+                    <input type="text" id="userDept" placeholder="例如：業務部、資訊部" required>
+                </div>
+                <div class="form-group">
+                    <label>分機</label>
+                    <input type="text" id="userExt" placeholder="選填">
+                </div>
+                <div class="form-group">
+                    <label>備註</label>
+                    <input type="text" id="userNote" placeholder="特殊需求、過敏等">
+                </div>
+            </div>
+        </div>
+
+        <div class="restaurant-tabs">
+            <button class="tab active" onclick="switchRestaurant('positano')">
+                🍝 Positano 波希塔諾異國料理
+            </button>
+            <button class="tab" onclick="switchRestaurant('meetsecret')">
+                🥗 Meet Secret 遇見秘境素食餐廳
+            </button>
+        </div>
+
+        <div class="main-content">
+            <!-- Positano 菜單 -->
+            <div id="positano-menu" class="menu-section active">
+                <!-- 焗烤 -->
+                <div class="category">
+                    <h3>🧀 焗烤</h3>
+                    <div class="menu-items" id="positano-gratin"></div>
+                </div>
+
+                <!-- 素食料理 -->
+                <div class="category">
+                    <h3>🥬 素食料理 / 蛋奶素</h3>
+                    <div class="menu-items" id="positano-vegetarian"></div>
+                </div>
+
+                <!-- 燉飯 -->
+                <div class="category">
+                    <h3>🍚 燉飯</h3>
+                    <div class="menu-items" id="positano-risotto"></div>
+                </div>
+
+                <!-- 炒飯 -->
+                <div class="category">
+                    <h3>🍳 炒飯</h3>
+                    <div class="menu-items" id="positano-friedrice"></div>
+                </div>
+
+                <!-- 點心 -->
+                <div class="category">
+                    <h3>🥟 點心</h3>
+                    <div class="menu-items" id="positano-snacks"></div>
+                </div>
+
+                <!-- 中式套餐 -->
+                <div class="category">
+                    <h3>🍲 中式套餐</h3>
+                    <div class="menu-items" id="positano-chinese"></div>
+                </div>
+
+                <!-- 小火鍋 -->
+                <div class="category">
+                    <h3>🍲 小火鍋</h3>
+                    <div class="menu-items" id="positano-hotpot"></div>
+                </div>
+
+                <!-- 歐風料理 -->
+                <div class="category">
+                    <h3>🍝 歐風料理</h3>
+                    <div class="menu-items" id="positano-european"></div>
+                </div>
+
+                <!-- 濃湯 -->
+                <div class="category">
+                    <h3>🍜 濃湯</h3>
+                    <div class="menu-items" id="positano-soup"></div>
+                </div>
+            </div>
+
+            <!-- Meet Secret 菜單 -->
+            <div id="meetsecret-menu" class="menu-section">
+                <!-- 熱炒 -->
+                <div class="category">
+                    <h3>🍳 熱炒 STIR-FRIED FOOD</h3>
+                    <div class="menu-items" id="meetsecret-stirfry"></div>
+                </div>
+
+                <!-- 火鍋 -->
+                <div class="category">
+                    <h3>🍲 火鍋 HOT POT</h3>
+                    <div class="menu-items" id="meetsecret-hotpot"></div>
+                </div>
+
+                <!-- 披薩 -->
+                <div class="category">
+                    <h3>🍕 披薩 PIZZA</h3>
+                    <div class="menu-items" id="meetsecret-pizza"></div>
+                </div>
+
+                <!-- 點心湯品 -->
+                <div class="category">
+                    <h3>🥟 點心 & 湯品 SOUP & FRIED FOOD</h3>
+                    <div class="menu-items" id="meetsecret-snacks"></div>
+                </div>
+            </div>
+
+            <!-- 購物車 -->
+            <div class="cart-summary">
+                <h3>🛒 我的訂單</h3>
+                <div id="cartItems">
+                    <div class="empty-cart">尚未選擇餐點</div>
+                </div>
+                <div id="cartTotal" style="display: none;" class="cart-total">
+                    <span>總計：</span>
+                    <span id="totalAmount">$0</span>
+                </div>
+                <button class="submit-btn" onclick="submitOrder()" disabled>送出訂單</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 確認對話框 -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h2>確認送出訂單？</h2>
+            <p>請確認您的訂單內容無誤</p>
+            <div id="orderSummary" style="margin: 20px 0;"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="closeModal()">取消</button>
+                <button class="modal-btn confirm" onclick="confirmSubmit()">確認送出</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 飲料選項（套餐附贈的5種飲料）
+        const drinkOptions = [
+            '咖啡',
+            '紅茶',
+            '奶茶',
+            '酸梅湯',
+            '決明子'
+        ];
+
+        // 湯品選項
+        const soupOptions = [
+            '玉米濃湯',
+            '南瓜濃湯',
+            '蘑菇濃湯'
+        ];
+
+        // 菜單數據
+        const menuData = {
+            positano: {
+                gratin: [
+                    { name: '焗烤炒飯', price: 260, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '焗烤茄汁肉醬飯/麵', price: 280, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
+                    { name: '焗烤海鮮飯/麵', price: 320, hasDrink: true, hasSoup: true,
+                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      description: '奶油/咖哩/辣味/茄汁/南瓜',
+                      options: { type: 'multi', options: [
+                          { label: '選擇主食', choices: ['飯', '麵'] },
+                          { label: '選擇口味', choices: ['奶油', '咖哩', '辣味', '茄汁', '南瓜'] }
+                      ]}
+                    },
+                    { name: '焗烤蘑菇雞肉飯/麵', price: 320, hasDrink: true, hasSoup: true,
+                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      description: '奶油/咖哩/辣味/茄汁',
+                      options: { type: 'multi', options: [
+                          { label: '選擇主食', choices: ['飯', '麵'] },
+                          { label: '選擇口味', choices: ['奶油', '咖哩', '辣味', '茄汁'] }
+                      ]}
+                    },
+                    { name: '焗烤咖哩牛肉飯/麵', price: 320, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
+                    { name: '焗烤黑胡椒(牛肉/雞肉)飯/麵', price: 320, hasDrink: true, hasSoup: true,
+                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'multi', options: [
+                          { label: '選擇主食', choices: ['飯', '麵'] },
+                          { label: '選擇肉類', choices: ['牛肉', '雞肉'] }
+                      ]}
+                    },
+                    { name: '焗烤泡菜(牛肉/雞肉)飯/麵', price: 320, hasDrink: true, hasSoup: true,
+                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'multi', options: [
+                          { label: '選擇主食', choices: ['飯', '麵'] },
+                          { label: '選擇肉類', choices: ['牛肉', '雞肉'] }
+                      ]}
+                    },
+                    { name: '焗烤青醬(海鮮/雞肉)飯/麵', price: 320, hasDrink: true, hasSoup: true,
+                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'multi', options: [
+                          { label: '選擇主食', choices: ['飯', '麵'] },
+                          { label: '選擇配料', choices: ['海鮮', '雞肉'] }
+                      ]}
+                    },
+                    { name: '焗烤番茄奶油海鮮飯/麵', price: 320, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
+                ],
+                vegetarian: [
+                    { name: '酥皮蔬菜蘑菇濃湯 蛋奶素', price: 150 },
+                    { name: '素食炒飯 (堅果/什錦/泡菜)', price: 200, options: { type: 'single', label: '選擇口味', choices: ['堅果', '什錦', '泡菜'] } },
+                    { name: '焗烤素食炒飯 蛋奶素', price: 260, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '青醬野菇蔬菜義大利麵 蛋奶素', price: 230, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '南瓜野菇蔬菜義大利麵 蛋奶素', price: 230, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '番茄野菇蔬菜義大利麵', price: 230, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '焗烤素食南瓜蔬菜飯/麵 蛋奶素', price: 300, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
+                    { name: '焗烤素食蔬菜飯/麵 (茄汁/咖哩/泡菜) 蛋奶素', price: 300, hasDrink: true, hasSoup: true,
+                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'multi', options: [
+                          { label: '選擇主食', choices: ['飯', '麵'] },
+                          { label: '選擇口味', choices: ['茄汁', '咖哩', '泡菜'] }
+                      ]}
+                    },
+                    { name: '素食野菇燉飯 蛋奶素', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食麻油野菇燉飯 蛋奶素', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素田園蔬菜鍋', price: 300, hasDrink: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食養生牛蒡鍋', price: 300, hasDrink: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食咖哩火鍋', price: 300, hasDrink: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食醬酪蔬膳鍋', price: 300, hasDrink: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食奶油南瓜鍋', price: 320, hasDrink: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                ],
+                risotto: [
+                    { name: '海鮮燉飯 (南瓜/青醬)', price: 300, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇口味', choices: ['南瓜', '青醬'] } },
+                    { name: '泰式椒麻海鮮燉飯', price: 300, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '紅酒牛肉燉飯', price: 300, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                ],
+                friedrice: [
+                    { name: '泡菜炒飯', price: 200 },
+                    { name: '櫻花蝦炒飯', price: 200 },
+                    { name: '麻辣肉絲炒飯', price: 200 },
+                    { name: '麻油肉絲炒飯', price: 200 },
+                    { name: '煙燻雞肉炒飯', price: 200 },
+                    { name: '辣味干貝醬炒飯', price: 200 },
+                    { name: '鮭魚炒飯', price: 210 },
+                    { name: '蝦仁炒飯', price: 210 },
+                ],
+                snacks: [
+                    { name: '厚片 【巧克力/花生/奶酥】', price: 70, options: { type: 'single', label: '選擇口味', choices: ['巧克力', '花生', '奶酥'] } },
+                    { name: '薯條', price: 75 },
+                    { name: '雞塊', price: 75 },
+                    { name: '洋蔥圈', price: 75 },
+                    { name: '焗烤厚片 【鮪魚/玉米/燻雞肉】', price: 95, options: { type: 'single', label: '選擇口味', choices: ['鮪魚', '玉米', '燻雞肉'] } },
+                    { name: '素食三明治', price: 100 },
+                    { name: '燻雞肉/鮪魚 三明治', price: 120, options: { type: 'single', label: '選擇口味', choices: ['燻雞肉', '鮪魚'] } },
+                    { name: '優格水果生菜沙拉', price: 160 },
+                    { name: 'QQ 巧克力鬆餅', price: 180 },
+                    { name: '鬆餅 【水果／冰淇淋】', price: 200, options: { type: 'single', label: '選擇口味', choices: ['水果', '冰淇淋'] } },
+                    { name: '黑糖麻吉冰淇淋鬆餅', price: 200 },
+                ],
+                chinese: [
+                    { name: '紫蘇梅雞腿飯', price: 280, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                    { name: '日式咖哩炸豬排飯', price: 280, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                    { name: '薑汁燒肉飯', price: 280, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                    { name: '乳酪焗雞腿飯', price: 280, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                    { name: '椒麻雞腿飯', price: 290, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                    { name: '蘿蔔牛肉豆腐煲', price: 330, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                    { name: '綠咖哩雞肉煲', price: 330, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                    { name: '黑胡椒牛柳飯', price: 330, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                    { name: '三杯雞腿肉飯', price: 350, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                    { name: '醬燒鮭魚飯', price: 350, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                    { name: '照燒烤青花魚飯', price: 380, hasDrink: true, hasSoup: true, note: '套餐均附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*例湯換濃湯需加 15 元' },
+                ],
+                hotpot: [
+                    { name: '什錦火鍋 (豬肉/牛肉)', price: 330, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，換海鮮需加 20 元', options: { type: 'single', label: '選擇肉類', choices: ['豬肉', '牛肉', '海鮮(+20元)'] } },
+                    { name: '香茅火鍋 (豬肉/牛肉)', price: 350, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇肉類', choices: ['豬肉', '牛肉'] } },
+                    { name: '泡麵火鍋 (豬肉/牛肉/海鮮)', price: 350, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
+                    { name: '味噌火鍋 (豬肉/牛肉/海鮮)', price: 350, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
+                    { name: '泰式酸辣咖哩鍋 (豬肉/牛肉/海鮮)', price: 350, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
+                    { name: '泡菜火鍋 (豬肉/牛肉/海鮮)', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
+                    { name: '紅燒牛肉火鍋', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '狗尾草雞肉鍋', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '麻油雞肉鍋', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '鳳梨苦瓜雞肉鍋', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '奶油火鍋 (豬肉/牛肉/海鮮)', price: 380, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
+                    { name: '剝皮辣椒雞肉鍋', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '何首烏雞肉鍋 (季節限定)', price: 400, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '藥膳羊肉鍋 (季節限定)', price: 400, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                ],
+                european: [
+                    { name: '義大利肉醬麵', price: 230, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '培根蘑菇雞肉義大利麵', price: 260, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '拿坡里茄汁海鮮義大利麵', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '川味麻辣雞肉義大利麵', price: 260, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '白酒蛤蠣義大利麵', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '青醬燻雞肉義大利麵', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '泰式椒麻海鮮義大利麵', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '奶油海鮮義大利麵', price: 290, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '青醬白酒海鮮義大利麵', price: 290, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '羅勒海鮮墨魚義大利麵', price: 290, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '黑胡椒牛肉義大利麵', price: 290, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                ],
+                soup: [
+                    { name: '酥皮玉米濃湯', price: 130 },
+                    { name: '酥皮海鮮濃湯', price: 160 },
+                    { name: '酥皮南瓜海鮮濃湯', price: 170 },
+                    { name: '海鮮濃湯', price: 110 },
+                    { name: '南瓜海鮮濃湯', price: 120 },
+                    { name: '玉米濃湯 (小)', price: 50 },
+                    { name: '玉米濃湯 (大)', price: 80 },
+                    { name: '單點酥皮', price: 50 },
+                ]
+            },
+            meetsecret: {
+                stirfry: [
+                    { name: '韓式泡菜炒飯', price: 210, description: 'Kimchi fried rice' },
+                    { name: '鮮蔬炒飯 (可全素)', price: 200, description: 'Vegetable fried rice' },
+                    { name: '焗烤炒飯', price: 240, description: 'Gratin fried rice' },
+                    { name: '焗烤泡菜香腸麵', price: 270, description: 'Gratin Kimchi fried rice' },
+                    { name: '韓式泡菜香腸麵 (可全素)', price: 240, description: 'Korean udon' },
+                    { name: '椒鹽拌炒蔬麵 (可全素)', price: 200, description: 'Spaghetti with Vegetable' },
+                ],
+                hotpot: [
+                    { name: '蔬食原味鍋', price: 330, hasDrink: true, description: 'Original Vegetables', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
+                    { name: '韓式泡菜鍋', price: 340, hasDrink: true, description: 'Kimchi', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
+                    { name: '特級麻辣鍋', price: 340, hasDrink: true, description: 'Spicy Hot Pot 🌶️🌶️🌶️', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
+                    { name: '京都味噌鍋', price: 340, hasDrink: true, description: 'Miso Hot Pot', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
+                    { name: '蕃茄蔬鍋', price: 340, hasDrink: true, description: 'Tomato soup', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
+                    { name: '日式咖哩鍋', price: 340, hasDrink: true, description: 'Japanese curry 🍛', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
+                    { name: '奶香南瓜鍋', price: 355, hasDrink: true, description: 'Milk pumpkin', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
+                    { name: '藥膳養生鍋', price: 385, hasDrink: true, description: 'Herb-flavored hot pot', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
+                    { name: '起司蔬菜鍋 (無辣椒)', price: 370, hasDrink: true, description: 'Cheese kimchi (with noodles Oodles) 🧀', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
+                ],
+                pizza: [
+                    { name: '蜜糖起司', price: 245, description: 'Honey cheese' },
+                    { name: '蜜糖起司蘋果', price: 245, description: 'Honey Apple Cheese' },
+                    { name: '瑪格莉特', price: 265, description: 'Margarita' },
+                    { name: '蔬食野菇', price: 295, description: 'Vegetable wild mushrooms' },
+                    { name: '海苔雙拼', price: 330, description: 'Surf and Turf' },
+                ],
+                snacks: [
+                    { name: '濃湯', price: 80, description: 'Corn Chowder' },
+                    { name: '酥炸豆腐', price: 100, description: 'Crispy Fried Tofu' },
+                    { name: '法式雞絲卷', price: 110, description: 'Baked Steamed Rolls' },
+                    { name: '德州薯薯', price: 100, description: 'French Fries' },
+                    { name: '酥炸鮮菇', price: 100, description: 'Fried Mushroom' },
+                    { name: '酥炸蘇蔬', price: 105, description: 'Salty Crispy Chicken' },
+                    { name: '日式炸捲', price: 105, description: 'Sushi Rolls' },
+                    { name: '酥炸三鮮菇 (金針、杏鮑、秀珍)', price: 185, description: 'Fried triple mushrooms' },
+                    { name: '炸物拼盤-A餐', price: 120, description: 'Mixed fried food-meal A' },
+                    { name: '炸物拼盤-B餐', price: 220, description: 'Mixed fried food-meal B' },
+                    { name: '炸物拼盤-C餐', price: 220, description: 'Mixed fried food-meal C' },
+                ],
+            }
+        };
+
+        let cart = [];
+        let currentRestaurant = 'positano';
+
+        // 初始化菜單
+        window.onload = function() {
+            renderMenu();
+        };
+
+        function renderMenu() {
+            // Positano 菜單
+            Object.keys(menuData.positano).forEach(category => {
+                const container = document.getElementById(`positano-${category}`);
+                if (container) {
+                    menuData.positano[category].forEach(item => {
+                        container.appendChild(createMenuItem('positano', item, category));
+                    });
+                }
+            });
+
+            // Meet Secret 菜單
+            Object.keys(menuData.meetsecret).forEach(category => {
+                const container = document.getElementById(`meetsecret-${category}`);
+                if (container) {
+                    menuData.meetsecret[category].forEach(item => {
+                        container.appendChild(createMenuItem('meetsecret', item, category));
+                    });
+                }
+            });
+        }
+
+        function createMenuItem(restaurant, item, category) {
+            const div = document.createElement('div');
+            div.className = 'menu-item';
+            
+            let html = `
+                <div class="item-header">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-prices">
+            `;
+            
+            // 顯示價格（統一為單一價格）
+            html += `<div class="price-row">$${item.price}</div>`;
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            if (item.description) {
+                html += `<div class="item-description">${item.description}</div>`;
+            }
+            
+            // 顯示附贈說明
+            if (item.note) {
+                html += `<div class="item-description" style="color: #28a745; font-weight: 500;">${item.note}</div>`;
+            }
+
+            // 添加選項區域
+            const optionsId = `options-${restaurant}-${category}-${Math.random().toString(36).substr(2, 9)}`;
+            html += `<div class="options-group" id="${optionsId}">`;
+
+            // 菜品選項
+            if (item.options) {
+                if (item.options.type === 'single') {
+                    html += `
+                        <label>${item.options.label}</label>
+                        <select class="option-select">
+                            ${item.options.choices.map(choice => `<option value="${choice}">${choice}</option>`).join('')}
+                        </select>
+                    `;
+                } else if (item.options.type === 'multi') {
+                    item.options.options.forEach(opt => {
+                        html += `
+                            <label>${opt.label}</label>
+                            <select class="option-select">
+                                ${opt.choices.map(choice => `<option value="${choice}">${choice}</option>`).join('')}
+                            </select>
+                        `;
+                    });
+                }
+            }
+
+            // 飲料選擇（只有標記hasDrink的才顯示）
+            if (item.hasDrink) {
+                // Meet Secret 火鍋的飲料選項不同
+                if (restaurant === 'meetsecret' && category === 'hotpot') {
+                    html += `
+                        <label>選擇飲料</label>
+                        <select class="option-select drink-select">
+                            <option value="特級紅茶">特級紅茶</option>
+                            <option value="特級奶茶">特級奶茶</option>
+                            <option value="決明子">決明子</option>
+                            <option value="黑糖珍奶">黑糖珍奶</option>
+                        </select>
+                    `;
+                } else {
+                    html += `
+                        <label>選擇飲料</label>
+                        <select class="option-select drink-select">
+                            ${drinkOptions.map(drink => `<option value="${drink}">${drink}</option>`).join('')}
+                        </select>
+                    `;
+                }
+            }
+
+            // 湯品選擇（只有標記hasSoup的才顯示）
+            if (item.hasSoup) {
+                html += `
+                    <label>選擇湯品</label>
+                    <select class="option-select soup-select">
+                        <option value="例湯">例湯</option>
+                        <option value="玉米濃湯 (+15元)">玉米濃湯 (+15元)</option>
+                        <option value="南瓜濃湯 (+15元)">南瓜濃湯 (+15元)</option>
+                        <option value="蘑菇濃湯 (+15元)">蘑菇濃湯 (+15元)</option>
+                    </select>
+                `;
+            }
+
+            html += `</div>`;
+
+            html += `
+                <div class="quantity-control">
+                    <button class="qty-btn minus">-</button>
+                    <div class="qty-display">1</div>
+                    <button class="qty-btn plus">+</button>
+                </div>
+            `;
+
+            div.innerHTML = html;
+
+            // 事件監聽
+            div.addEventListener('click', function(e) {
+                if (e.target.classList.contains('qty-btn') || 
+                    e.target.classList.contains('option-select') ||
+                    e.target.closest('.options-group')) {
+                    e.stopPropagation();
+                    return;
+                }
+                toggleItem(div, restaurant, item, category);
+            });
+
+            const minusBtn = div.querySelector('.minus');
+            const plusBtn = div.querySelector('.plus');
+
+            minusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                changeQty(div, -1, restaurant, item, category);
+            });
+
+            plusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                changeQty(div, 1, restaurant, item, category);
+            });
+
+            // 為下拉選單添加事件監聽
+            const selects = div.querySelectorAll('.option-select');
+            selects.forEach(select => {
+                select.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+                
+                select.addEventListener('change', (e) => {
+                    e.stopPropagation();
+                    if (div.classList.contains('selected')) {
+                        const qty = parseInt(div.querySelector('.qty-display').textContent);
+                        addToCart(div, restaurant, item, qty);
+                    }
+                });
+            });
+
+            return div;
+        }
+
+        function toggleItem(element, restaurant, item, category) {
+            const qtyControl = element.querySelector('.quantity-control');
+            const optionsGroup = element.querySelector('.options-group');
+            
+            if (!element.classList.contains('selected')) {
+                element.classList.add('selected');
+                qtyControl.classList.add('active');
+                if (optionsGroup) optionsGroup.classList.add('active');
+                element.querySelector('.qty-display').textContent = '1';
+                addToCart(element, restaurant, item, 1);
+            } else {
+                element.classList.remove('selected');
+                qtyControl.classList.remove('active');
+                if (optionsGroup) optionsGroup.classList.remove('active');
+                removeFromCart(element, restaurant, item);
+            }
+        }
+
+        function changeQty(element, delta, restaurant, item, category) {
+            const qtyDisplay = element.querySelector('.qty-display');
+            let qty = parseInt(qtyDisplay.textContent) + delta;
+            
+            if (qty < 1) {
+                qty = 0;
+                element.classList.remove('selected');
+                element.querySelector('.quantity-control').classList.remove('active');
+                const optionsGroup = element.querySelector('.options-group');
+                if (optionsGroup) optionsGroup.classList.remove('active');
+                removeFromCart(element, restaurant, item);
+                return;
+            }
+            
+            qtyDisplay.textContent = qty;
+            updateCartQuantity(element, restaurant, item, qty);
+        }
+
+        function getSelectedOptions(element, item) {
+            const options = [];
+            let price = item.price;
+            let drink = null;
+            let soup = null;
+            
+            const selects = element.querySelectorAll('.option-select');
+            selects.forEach(select => {
+                if (select.classList.contains('drink-select')) {
+                    drink = select.value;
+                    options.push(`飲料:${drink}`);
+                } else if (select.classList.contains('soup-select')) {
+                    soup = select.value;
+                    options.push(`湯品:${soup}`);
+                    // 如果選擇濃湯，加 15 元
+                    if (soup.includes('+15元')) {
+                        price += 15;
+                    }
+                } else {
+                    options.push(select.value);
+                }
+            });
+            
+            return {
+                optionsText: options.join(', '),
+                price: price,
+                drink: drink,
+                soup: soup
+            };
+        }
+
+        function getItemKey(element, restaurant, item) {
+            const { optionsText } = getSelectedOptions(element, item);
+            return `${restaurant}-${item.name}${optionsText ? '-' + optionsText : ''}`;
+        }
+
+        function addToCart(element, restaurant, item, qty) {
+            const key = getItemKey(element, restaurant, item);
+            const { optionsText, price, drink, soup } = getSelectedOptions(element, item);
+            
+            const existingIndex = cart.findIndex(cartItem => cartItem.key === key);
+            
+            if (existingIndex >= 0) {
+                cart[existingIndex].qty = qty;
+                cart[existingIndex].element = element;
+            } else {
+                cart.push({
+                    key,
+                    element,
+                    restaurant,
+                    name: item.name,
+                    options: optionsText,
+                    drink: drink,
+                    soup: soup,
+                    price,
+                    qty
+                });
+            }
+            
+            updateCartDisplay();
+        }
+
+        function removeFromCart(element, restaurant, item) {
+            const key = getItemKey(element, restaurant, item);
+            cart = cart.filter(cartItem => cartItem.key !== key);
+            updateCartDisplay();
+        }
+
+        function updateCartQuantity(element, restaurant, item, qty) {
+            if (qty === 0) {
+                removeFromCart(element, restaurant, item);
+            } else {
+                addToCart(element, restaurant, item, qty);
+            }
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const totalAmount = document.getElementById('totalAmount');
+            const submitBtn = document.querySelector('.submit-btn');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="empty-cart">尚未選擇餐點</div>';
+                cartTotal.style.display = 'none';
+                submitBtn.disabled = true;
+                return;
+            }
+            
+            let html = '';
+            let total = 0;
+            
+            const positanoItems = cart.filter(item => item.restaurant === 'positano');
+            const meetsecretItems = cart.filter(item => item.restaurant === 'meetsecret');
+            
+            if (positanoItems.length > 0) {
+                html += '<div style="font-weight: 600; color: #667eea; margin: 10px 0;">🍝 Positano</div>';
+                positanoItems.forEach(item => {
+                    const subtotal = item.price * item.qty;
+                    total += subtotal;
+                    html += `
+                        <div class="cart-item">
+                            <div class="cart-item-name">${item.name}</div>
+                            ${item.options ? `<div class="cart-item-option">${item.options}</div>` : ''}
+                            <div class="cart-item-qty">數量: ${item.qty}</div>
+                            <div class="cart-item-price">$${subtotal}</div>
+                        </div>
+                    `;
+                });
+            }
+            
+            if (meetsecretItems.length > 0) {
+                html += '<div style="font-weight: 600; color: #667eea; margin: 10px 0;">🥗 Meet Secret</div>';
+                meetsecretItems.forEach(item => {
+                    const subtotal = item.price * item.qty;
+                    total += subtotal;
+                    html += `
+                        <div class="cart-item">
+                            <div class="cart-item-name">${item.name}</div>
+                            ${item.options ? `<div class="cart-item-option">${item.options}</div>` : ''}
+                            <div class="cart-item-qty">數量: ${item.qty}</div>
+                            <div class="cart-item-price">$${subtotal}</div>
+                        </div>
+                    `;
+                });
+            }
+            
+            cartItems.innerHTML = html;
+            totalAmount.textContent = `$${total}`;
+            cartTotal.style.display = 'flex';
+            submitBtn.disabled = false;
+        }
+
+        function switchRestaurant(restaurant) {
+            currentRestaurant = restaurant;
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.menu-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(restaurant + '-menu').classList.add('active');
+        }
+
+        function submitOrder() {
+            const userName = document.getElementById('userName').value.trim();
+            const userDept = document.getElementById('userDept').value.trim();
+            
+            if (!userName || !userDept) {
+                alert('請填寫姓名和部門');
+                return;
+            }
+            
+            if (cart.length === 0) {
+                alert('請至少選擇一項餐點');
+                return;
+            }
+            
+            showConfirmModal();
+        }
+
+        function showConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            const orderSummary = document.getElementById('orderSummary');
+            
+            const userName = document.getElementById('userName').value.trim();
+            const userDept = document.getElementById('userDept').value.trim();
+            const userExt = document.getElementById('userExt').value.trim();
+            const userNote = document.getElementById('userNote').value.trim();
+            
+            let summary = `
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left;">
+                    <div><strong>訂購人：</strong>${userName}</div>
+                    <div><strong>部門：</strong>${userDept}</div>
+                    ${userExt ? `<div><strong>分機：</strong>${userExt}</div>` : ''}
+                    ${userNote ? `<div><strong>備註：</strong>${userNote}</div>` : ''}
+                </div>
+                <div style="margin-top: 15px; text-align: left;">
+                    <strong>訂購品項：</strong>
+                    <div style="margin-top: 10px;">
+            `;
+            
+            cart.forEach(item => {
+                const restaurantName = item.restaurant === 'positano' ? 'Positano' : 'Meet Secret';
+                summary += `<div>・${item.name}${item.options ? ' (' + item.options + ')' : ''} × ${item.qty} ($${item.price * item.qty}) - ${restaurantName}</div>`;
+            });
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            summary += `</div><div style="margin-top: 10px; font-weight: 700; color: #667eea;">總計：$${total}</div></div>`;
+            
+            orderSummary.innerHTML = summary;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
+        function confirmSubmit() {
+            const userName = document.getElementById('userName').value.trim();
+            const userDept = document.getElementById('userDept').value.trim();
+            const userExt = document.getElementById('userExt').value.trim();
+            const userNote = document.getElementById('userNote').value.trim();
+            
+            const orderData = {
+                userName,
+                userDept,
+                userExt,
+                userNote,
+                items: cart,
+                total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
+                timestamp: new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })
+            };
+            
+            sendToGoogleForm(orderData);
+        }
+
+        function sendToGoogleForm(orderData) {
+            // Google Form URL - 請建立表單後替換
+            // 表單範例 URL：https://docs.google.com/forms/d/e/1FAIpQLSe.../formResponse
+            const formUrl = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+            
+            const formData = new FormData();
+            
+            // 請在建立 Google 表單後，替換以下 entry.XXXXXX 為實際的欄位 ID
+            // 建議的表單欄位：
+            // 1. 訂購時間
+            // 2. 訂購人姓名
+            // 3. 部門
+            // 4. 分機
+            // 5. 餐廳
+            // 6. 餐點名稱
+            // 7. 選項（外帶/內用、口味、飲料等）
+            // 8. 數量
+            // 9. 單價
+            // 10. 小計
+            // 11. 訂單總額
+            // 12. 備註
+            
+            // 將每個餐點分別提交
+            cart.forEach((item, index) => {
+                const restaurantName = item.restaurant === 'positano' ? 'Positano 波希塔諾' : 'Meet Secret 遇見秘境';
+                
+                // 如果要每筆資料都單獨送出，可以用這個方式
+                const itemFormData = new FormData();
+                itemFormData.append('entry.1111111', orderData.timestamp); // 訂購時間
+                itemFormData.append('entry.2222222', orderData.userName);  // 姓名
+                itemFormData.append('entry.3333333', orderData.userDept);  // 部門
+                itemFormData.append('entry.4444444', orderData.userExt || '');   // 分機
+                itemFormData.append('entry.5555555', restaurantName);      // 餐廳
+                itemFormData.append('entry.6666666', item.name);           // 餐點名稱
+                itemFormData.append('entry.7777777', item.options || ''); // 選項
+                itemFormData.append('entry.8888888', item.qty);            // 數量
+                itemFormData.append('entry.9999999', item.price);          // 單價
+                itemFormData.append('entry.1010101', item.price * item.qty); // 小計
+                itemFormData.append('entry.1111112', index === 0 ? orderData.total : ''); // 總額(只在第一筆顯示)
+                itemFormData.append('entry.1212121', index === 0 ? orderData.userNote : ''); // 備註(只在第一筆顯示)
+                
+                // 送出每筆餐點資料
+                fetch(formUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: itemFormData
+                }).catch(error => {
+                    console.error('Error submitting item:', error);
+                });
+            });
+            
+            // 同時發送 Email 通知
+            sendEmailNotification(orderData);
+            
+            // 顯示成功訊息
+            setTimeout(() => {
+                closeModal();
+                showSuccessMessage();
+                resetForm();
+            }, 1000);
+        }
+
+        function sendEmailNotification(orderData) {
+            // 使用 Google Apps Script 發送 Email
+            // 您需要建立一個 Google Apps Script Web App 來處理 Email 發送
+            // 這裡提供範例程式碼框架
+            
+            const emailData = {
+                to: 'wumas67@gmail.com',
+                subject: `【午餐團訂】${orderData.userName} 的訂單 - ${orderData.timestamp}`,
+                body: generateEmailBody(orderData)
+            };
+            
+            // 實際的 Email 發送需要透過 Google Apps Script
+            // 請參考下方的 Apps Script 範例程式碼
+            console.log('Email 通知資料：', emailData);
+        }
+
+        function generateEmailBody(orderData) {
+            let body = `收到新的午餐訂單：\n\n`;
+            body += `========================================\n`;
+            body += `訂購人資訊\n`;
+            body += `========================================\n`;
+            body += `姓名：${orderData.userName}\n`;
+            body += `部門：${orderData.userDept}\n`;
+            body += `分機：${orderData.userExt || '未提供'}\n`;
+            body += `備註：${orderData.userNote || '無'}\n\n`;
+            body += `========================================\n`;
+            body += `訂單明細\n`;
+            body += `========================================\n`;
+            
+            orderData.items.forEach(item => {
+                const restaurantName = item.restaurant === 'positano' ? 'Positano' : 'Meet Secret';
+                body += `${item.name}`;
+                if (item.options) body += ` (${item.options})`;
+                body += ` × ${item.qty} = $${item.price * item.qty} - ${restaurantName}\n`;
+            });
+            
+            body += `\n========================================\n`;
+            body += `訂單總額：$${orderData.total}\n`;
+            body += `訂購時間：${orderData.timestamp}\n`;
+            body += `========================================\n`;
+            
+            return body;
+        }
+
+        function showSuccessMessage() {
+            const container = document.querySelector('.container');
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `
+                <h2>✅ 訂單已送出！</h2>
+                <p>您的訂單已成功送出並記錄到系統中。</p>
+                <p>負責人將會收到 Email 通知。</p>
+                <p>感謝您的訂購！</p>
+            `;
+            container.insertBefore(successDiv, container.firstChild);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 5000);
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            document.getElementById('userName').value = '';
+            document.getElementById('userDept').value = '';
+            document.getElementById('userExt').value = '';
+            document.getElementById('userNote').value = '';
+            
+            cart = [];
+            
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('selected');
+                const qtyControl = item.querySelector('.quantity-control');
+                if (qtyControl) {
+                    qtyControl.classList.remove('active');
+                    const qtyDisplay = item.querySelector('.qty-display');
+                    if (qtyDisplay) {
+                        qtyDisplay.textContent = '1';
+                    }
+                }
+                const optionsGroup = item.querySelector('.options-group');
+                if (optionsGroup) optionsGroup.classList.remove('active');
+            });
+            
+            updateCartDisplay();
+        }
+    </script>
+</body>
+</html>
