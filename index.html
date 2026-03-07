@@ -1359,60 +1359,91 @@
         }
 
         function sendToGoogleForm(orderData) {
-            // 使用新的 Google Apps Script URL
             const scriptUrl = 'https://script.google.com/macros/s/AKfycbwi-Ne_Ci56W4hjWO9MOEYlZ6ZCAXatqWqj2bpTK7gPhXfMezzydIN-g8aCHo7JTPBEeQ/exec';
-            
-            // 將每個餐點分別發送
-            const promises = orderData.items.map((item, index) => {
+
+            // 印出可讀的訂單資訊（排除 DOM element）
+            const logData = {
+                userName: orderData.userName,
+                userDept: orderData.userDept,
+                userExt: orderData.userExt,
+                userNote: orderData.userNote,
+                total: orderData.total,
+                timestamp: orderData.timestamp,
+                items: orderData.items.map(i => ({
+                    name: i.name, options: i.options,
+                    price: i.price, qty: i.qty, restaurant: i.restaurant
+                }))
+            };
+            console.log('準備發送訂單到 Google Apps Script');
+            console.log('訂單資料:', JSON.stringify(logData, null, 2));
+
+            let successCount = 0;
+            let failCount = 0;
+            const totalItems = orderData.items.length;
+
+            function checkAllDone() {
+                if (successCount + failCount < totalItems) return;
+                console.log(`發送完畢：成功 ${successCount} 筆，失敗 ${failCount} 筆`);
+                if (failCount === 0 || successCount > 0) {
+                    // 只要有任一筆成功，或全部為 no-cors 的預期警告，視為完成
+                    setTimeout(() => {
+                        closeModal();
+                        showSuccessMessage();
+                        resetForm();
+                    }, 500);
+                } else {
+                    closeModal();
+                    alert('❌ 訂單送出失敗，請確認網路連線後再試一次。');
+                }
+            }
+
+            orderData.items.forEach((item, index) => {
                 const restaurantName = item.restaurant === 'positano' ? 'Positano 波希塔諾' : 'Meet Secret 遇見秘境';
-                
-                // 使用 URLSearchParams 建立 application/x-www-form-urlencoded 格式
+
+                const fields = {
+                    'timestamp': orderData.timestamp,
+                    'userName': orderData.userName,
+                    'userDept': orderData.userDept,
+                    'userExt': orderData.userExt || '',
+                    'restaurant': restaurantName,
+                    'dishName': item.name,
+                    'options': item.options || '',
+                    'quantity': item.qty,
+                    'unitPrice': item.price,
+                    'subtotal': item.price * item.qty,
+                    'orderTotal': index === 0 ? orderData.total : '',
+                    'note': index === 0 ? orderData.userNote : ''
+                };
+
                 const params = new URLSearchParams();
-                params.append('timestamp', orderData.timestamp);
-                params.append('userName', orderData.userName);
-                params.append('userDept', orderData.userDept);
-                params.append('userExt', orderData.userExt || '');
-                params.append('restaurant', restaurantName);
-                params.append('dishName', item.name);
-                params.append('options', item.options || '');
-                params.append('quantity', item.qty);
-                params.append('unitPrice', item.price);
-                params.append('subtotal', item.price * item.qty);
-                // 只在第一筆顯示總額和備註
-                params.append('orderTotal', index === 0 ? orderData.total : '');
-                params.append('note', index === 0 ? orderData.userNote : '');
-                
-                // 使用傳統的 form 表單格式發送
-                return fetch(scriptUrl, {
+                Object.keys(fields).forEach(key => params.append(key, String(fields[key])));
+
+                console.log(`正在發送第 ${index + 1}/${totalItems} 筆：${item.name}`);
+
+                fetch(scriptUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: params.toString(),
-                    mode: 'no-cors'
-                }).catch(error => {
-                    console.error('發送項目時出錯:', error);
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
+                })
+                .then(() => {
+                    // no-cors 模式下 response 為 opaque，無法讀取內容，
+                    // 但 fetch resolve 代表請求已送達（不是網路錯誤）
+                    successCount++;
+                    console.log(`✅ 第 ${index + 1} 筆已送出`);
+                    checkAllDone();
+                })
+                .catch(err => {
+                    // Failed to fetch = 真正的網路錯誤（斷線、封鎖等）
+                    failCount++;
+                    console.error(`❌ 第 ${index + 1} 筆發送失敗：${err.message}`);
+                    checkAllDone();
                 });
-            });
-            
-            // 等待所有請求完成
-            Promise.all(promises).then(() => {
-                console.log('所有訂單項目已送出');
-                closeModal();
-                showSuccessMessage();
-                resetForm();
-            }).catch(error => {
-                console.error('發送訂單失敗:', error);
-                // 即使出錯也顯示成功訊息（因為 no-cors 模式）
-                closeModal();
-                showSuccessMessage();
-                resetForm();
             });
         }
 
         function sendEmailNotification(orderData) {
             // Email 通知已整合在 Google Apps Script 中
-            // 不需要額外處理
             console.log('Email 通知將由 Google Apps Script 自動發送到 wumas67@gmail.com');
         }
 
