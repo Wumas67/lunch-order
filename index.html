@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公司中餐團訂系統</title>
+    <title>大成公司幸福600餐點訂購</title>
     <style>
         * {
             margin: 0;
@@ -741,7 +741,7 @@
                 ],
                 vegetarian: [
                     { name: '酥皮蔬菜蘑菇濃湯 蛋奶素', price: 150 },
-                    { name: '素食炒飯 (堅果/什錦/泡菜)', price: 200, options: { type: 'single', label: '選擇口味', choices: ['堅果', '什錦', '泡菜'] } },
+                    { name: '素食炒飯 (堅果/什錦/泡菜)', price: 200, hasDrink: true, hasSoup: true, note: '附贈：隨餐附湯、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇口味', choices: ['堅果', '什錦', '泡菜'] } },
                     { name: '焗烤素食炒飯 蛋奶素', price: 260, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
                     { name: '青醬野菇蔬菜義大利麵 蛋奶素', price: 230, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
                     { name: '南瓜野菇蔬菜義大利麵 蛋奶素', price: 230, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
@@ -1066,13 +1066,8 @@
                     e.stopPropagation();
                 });
                 
-                select.addEventListener('change', (e) => {
-                    e.stopPropagation();
-                    if (div.classList.contains('selected')) {
-                        const qty = parseInt(div.querySelector('.qty-display').textContent);
-                        addToCart(div, restaurant, item, qty);
-                    }
-                });
+                // 移除 change 事件，不再自動更新購物車
+                // 只有按「加入訂單」按鈕才會加入購物車
             });
 
             return div;
@@ -1108,13 +1103,16 @@
             
             qtyDisplay.textContent = qty;
             
-            // 如果購物車中已有此項目，自動更新數量
+            // 只在購物車中已經有這個項目時，才自動更新數量
+            // 否則不做任何事，等待用戶按「加入訂單」按鈕
             const key = getItemKey(element, restaurant, item);
             const cartItem = cart.find(item => item.key === key);
             if (cartItem) {
+                // 已在購物車中，更新數量
                 cartItem.qty = qty;
                 updateCartDisplay();
             }
+            // 如果不在購物車中，只更新顯示數量，不加入購物車
         }
 
         function getSelectedOptions(element, item) {
@@ -1359,47 +1357,27 @@
         }
 
         function sendToGoogleForm(orderData) {
+            // Google Apps Script URL（已更新）
             const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0h-j-zCb3ptNcwokTTQS0Ut7QwhFbbIIi8G__ijYC8TFViCj00F6fOr15MjVsugkSWw/exec';
-
-            // 印出可讀的訂單資訊（排除 DOM element）
-            const logData = {
-                userName: orderData.userName,
-                userDept: orderData.userDept,
-                userExt: orderData.userExt,
-                userNote: orderData.userNote,
-                total: orderData.total,
-                timestamp: orderData.timestamp,
-                items: orderData.items.map(i => ({
-                    name: i.name, options: i.options,
-                    price: i.price, qty: i.qty, restaurant: i.restaurant
-                }))
-            };
+            
             console.log('準備發送訂單到 Google Apps Script');
-            console.log('訂單資料:', JSON.stringify(logData, null, 2));
-
-            let successCount = 0;
-            let failCount = 0;
+            console.log('訂單資料:', orderData);
+            
+            // 建立一個隱藏的 iframe 來發送資料（避免 CORS 問題）
+            let submitted = 0;
             const totalItems = orderData.items.length;
-
-            function checkAllDone() {
-                if (successCount + failCount < totalItems) return;
-                console.log(`發送完畢：成功 ${successCount} 筆，失敗 ${failCount} 筆`);
-                if (failCount === 0 || successCount > 0) {
-                    // 只要有任一筆成功，或全部為 no-cors 的預期警告，視為完成
-                    setTimeout(() => {
-                        closeModal();
-                        showSuccessMessage();
-                        resetForm();
-                    }, 500);
-                } else {
-                    closeModal();
-                    alert('❌ 訂單送出失敗，請確認網路連線後再試一次。');
-                }
-            }
-
+            
             orderData.items.forEach((item, index) => {
                 const restaurantName = item.restaurant === 'positano' ? 'Positano 波希塔諾' : 'Meet Secret 遇見秘境';
-
+                
+                // 建立隱藏的表單
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = scriptUrl;
+                form.target = 'hidden-iframe-' + index;
+                form.style.display = 'none';
+                
+                // 添加表單欄位
                 const fields = {
                     'timestamp': orderData.timestamp,
                     'userName': orderData.userName,
@@ -1414,31 +1392,47 @@
                     'orderTotal': index === 0 ? orderData.total : '',
                     'note': index === 0 ? orderData.userNote : ''
                 };
-
-                const params = new URLSearchParams();
-                Object.keys(fields).forEach(key => params.append(key, String(fields[key])));
-
-                console.log(`正在發送第 ${index + 1}/${totalItems} 筆：${item.name}`);
-
-                fetch(scriptUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: params.toString()
-                })
-                .then(() => {
-                    // no-cors 模式下 response 為 opaque，無法讀取內容，
-                    // 但 fetch resolve 代表請求已送達（不是網路錯誤）
-                    successCount++;
-                    console.log(`✅ 第 ${index + 1} 筆已送出`);
-                    checkAllDone();
-                })
-                .catch(err => {
-                    // Failed to fetch = 真正的網路錯誤（斷線、封鎖等）
-                    failCount++;
-                    console.error(`❌ 第 ${index + 1} 筆發送失敗：${err.message}`);
-                    checkAllDone();
+                
+                Object.keys(fields).forEach(key => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = fields[key];
+                    form.appendChild(input);
                 });
+                
+                // 建立隱藏的 iframe
+                const iframe = document.createElement('iframe');
+                iframe.name = 'hidden-iframe-' + index;
+                iframe.style.display = 'none';
+                
+                // 監聽 iframe 載入完成
+                iframe.onload = function() {
+                    submitted++;
+                    console.log(`已發送 ${submitted}/${totalItems} 筆訂單`);
+                    
+                    if (submitted === totalItems) {
+                        console.log('所有訂單已送出');
+                        setTimeout(() => {
+                            closeModal();
+                            showSuccessMessage();
+                            resetForm();
+                            
+                            // 清理表單和 iframe
+                            document.querySelectorAll('form[target^="hidden-iframe-"]').forEach(f => f.remove());
+                            document.querySelectorAll('iframe[name^="hidden-iframe-"]').forEach(i => i.remove());
+                        }, 1000);
+                    }
+                };
+                
+                // 添加到頁面
+                document.body.appendChild(iframe);
+                document.body.appendChild(form);
+                
+                // 提交表單
+                setTimeout(() => {
+                    form.submit();
+                }, index * 200); // 每筆訂單間隔 200ms
             });
         }
 
