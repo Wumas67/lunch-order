@@ -749,150 +749,170 @@
         const menuData = {
             positano: {
                 gratin: [
-                    { name: '焗烤炒飯', price: 260, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '焗烤茄汁肉醬飯/麵', price: 280, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
-                    { name: '焗烤海鮮飯/麵', price: 320, hasDrink: true, hasSoup: true,
-                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                    // 焗烤類：附玉米濃湯（唯一選項，無加價購）
+                    { name: '焗烤炒飯', price: 195, hasDrink: true, hasSoup: 'gratin', note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '焗烤茄汁肉醬飯/麵', price: 210, hasDrink: true, hasSoup: 'gratin', note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
+                    { name: '焗烤海鮮飯/麵', price: 220, hasDrink: true, hasSoup: 'gratin',
+                      note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
                       description: '奶油/咖哩/辣味/茄汁/南瓜',
                       options: { type: 'multi', options: [
                           { label: '選擇主食', choices: ['飯', '麵'] },
                           { label: '選擇口味', choices: ['奶油', '咖哩', '辣味', '茄汁', '南瓜'] }
                       ]}
                     },
-                    { name: '焗烤蘑菇雞肉飯/麵', price: 320, hasDrink: true, hasSoup: true,
-                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                    { name: '焗烤蘑菇雞肉飯/麵', price: 220, hasDrink: true, hasSoup: 'gratin',
+                      note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
                       description: '奶油/咖哩/辣味/茄汁',
                       options: { type: 'multi', options: [
                           { label: '選擇主食', choices: ['飯', '麵'] },
                           { label: '選擇口味', choices: ['奶油', '咖哩', '辣味', '茄汁'] }
                       ]}
                     },
-                    { name: '焗烤咖哩牛肉飯/麵', price: 320, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
-                    { name: '焗烤黑胡椒(牛肉/雞肉)飯/麵', price: 320, hasDrink: true, hasSoup: true,
-                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                    { name: '焗烤咖哩牛肉飯/麵', price: 220, hasDrink: true, hasSoup: 'gratin', note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
+                    { name: '焗烤黑胡椒(牛肉/雞肉)飯/麵', price: 220, hasDrink: true, hasSoup: 'gratin',
+                      note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
                       options: { type: 'multi', options: [
                           { label: '選擇主食', choices: ['飯', '麵'] },
                           { label: '選擇肉類', choices: ['牛肉', '雞肉'] }
                       ]}
                     },
-                    { name: '焗烤泡菜(牛肉/雞肉)飯/麵', price: 320, hasDrink: true, hasSoup: true,
-                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                    { name: '焗烤泡菜(牛肉/雞肉)飯/麵', price: 220, hasDrink: true, hasSoup: 'gratin',
+                      note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
                       options: { type: 'multi', options: [
                           { label: '選擇主食', choices: ['飯', '麵'] },
                           { label: '選擇肉類', choices: ['牛肉', '雞肉'] }
                       ]}
                     },
-                    { name: '焗烤青醬(海鮮/雞肉)飯/麵', price: 320, hasDrink: true, hasSoup: true,
-                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                    { name: '焗烤青醬(海鮮/雞肉)飯/麵', price: 220, hasDrink: true, hasSoup: 'gratin',
+                      note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
                       options: { type: 'multi', options: [
                           { label: '選擇主食', choices: ['飯', '麵'] },
                           { label: '選擇配料', choices: ['海鮮', '雞肉'] }
                       ]}
                     },
-                    { name: '焗烤番茄奶油海鮮飯/麵', price: 320, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
+                    { name: '焗烤番茄奶油海鮮飯/麵', price: 220, hasDrink: true, hasSoup: 'gratin', note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
                 ],
                 vegetarian: [
-                    { name: '酥皮蔬菜蘑菇濃湯 蛋奶素', price: 150 },
-                    { name: '素食炒飯 (堅果/什錦/泡菜)', price: 200, hasDrink: true, hasSoup: true, note: '附贈：隨餐附湯、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇口味', choices: ['堅果', '什錦', '泡菜'] } },
-                    { name: '焗烤素食炒飯 蛋奶素', price: 260, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '青醬野菇蔬菜義大利麵 蛋奶素', price: 230, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '南瓜野菇蔬菜義大利麵 蛋奶素', price: 230, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '番茄野菇蔬菜義大利麵', price: 230, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '焗烤素食南瓜蔬菜飯/麵 蛋奶素', price: 300, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
-                    { name: '焗烤素食蔬菜飯/麵 (茄汁/咖哩/泡菜) 蛋奶素', price: 300, hasDrink: true, hasSoup: true,
-                      note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                    // 素食：只有隨餐附湯，無加價購
+                    { name: '酥皮蔬菜蘑菇濃湯 蛋奶素', price: 120 },
+                    { name: '素食炒飯 (堅果/什錦/泡菜)', price: 150, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇口味', choices: ['堅果', '什錦', '泡菜'] } },
+                    { name: '焗烤素食炒飯 蛋奶素', price: 195, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '青醬野菇蔬菜義大利麵 蛋奶素', price: 175, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '南瓜野菇蔬菜義大利麵 蛋奶素', price: 175, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '番茄野菇蔬菜義大利麵', price: 175, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '焗烤素食南瓜蔬菜飯/麵 蛋奶素', price: 230, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇主食', choices: ['飯', '麵'] } },
+                    { name: '焗烤素食蔬菜飯/麵 (茄汁/咖哩/泡菜) 蛋奶素', price: 230, hasDrink: true, hasSoup: 'fixed',
+                      note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
                       options: { type: 'multi', options: [
                           { label: '選擇主食', choices: ['飯', '麵'] },
                           { label: '選擇口味', choices: ['茄汁', '咖哩', '泡菜'] }
                       ]}
                     },
-                    { name: '素食野菇燉飯 蛋奶素', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '素食麻油野菇燉飯 蛋奶素', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '素田園蔬菜鍋', price: 300, hasDrink: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '素食養生牛蒡鍋', price: 300, hasDrink: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '素食咖哩火鍋', price: 300, hasDrink: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '素食醬酪蔬膳鍋', price: 300, hasDrink: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '素食奶油南瓜鍋', price: 320, hasDrink: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食野菇燉飯 蛋奶素', price: 200, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食麻油野菇燉飯 蛋奶素', price: 200, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素田園蔬菜鍋', price: 225, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食養生牛蒡鍋', price: 225, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食咖哩火鍋', price: 225, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食當歸藥膳鍋', price: 225, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '素食奶油南瓜鍋', price: 240, hasDrink: true, hasSoup: 'fixed', note: '附贈：隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
                 ],
                 risotto: [
-                    { name: '海鮮燉飯 (南瓜/青醬)', price: 300, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇口味', choices: ['南瓜', '青醬'] } },
-                    { name: '泰式椒麻海鮮燉飯', price: 300, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '紅酒牛肉燉飯', price: 300, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    // 燉飯：附玉米濃湯，無其他加價購
+                    { name: '海鮮燉飯 (南瓜/青醬)', price: 225, hasDrink: true, hasSoup: 'gratin', note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇口味', choices: ['南瓜', '青醬'] } },
+                    { name: '泰式椒麻海鮮燉飯', price: 225, hasDrink: true, hasSoup: 'gratin', note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '紅酒牛肉燉飯', price: 225, hasDrink: true, hasSoup: 'gratin', note: '附贈：玉米濃湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
                 ],
                 friedrice: [
-                    { name: '泡菜炒飯', price: 200, hasDrink: true, hasSoup: true, note: '附贈：隨餐附湯、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '櫻花蝦炒飯', price: 200, hasDrink: true, hasSoup: true, note: '附贈：隨餐附湯、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '麻辣肉絲炒飯', price: 200, hasDrink: true, hasSoup: true, note: '附贈：隨餐附湯、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '麻油肉絲炒飯', price: 200, hasDrink: true, hasSoup: true, note: '附贈：隨餐附湯、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '煙燻雞肉炒飯', price: 200, hasDrink: true, hasSoup: true, note: '附贈：隨餐附湯、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '辣味干貝醬炒飯', price: 200, hasDrink: true, hasSoup: true, note: '附贈：隨餐附湯、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '鮭魚炒飯', price: 210, hasDrink: true, hasSoup: true, note: '附贈：隨餐附湯、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '蝦仁炒飯', price: 210, hasDrink: true, hasSoup: true, note: '附贈：隨餐附湯、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    // 炒飯：附隨餐附湯，可換玉米濃湯+15元
+                    { name: '泡菜炒飯', price: 150, hasDrink: true, hasSoup: true, note: '附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '櫻花蝦炒飯', price: 150, hasDrink: true, hasSoup: true, note: '附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '麻辣肉絲炒飯', price: 150, hasDrink: true, hasSoup: true, note: '附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '麻油肉絲炒飯', price: 150, hasDrink: true, hasSoup: true, note: '附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '煙燻雞肉炒飯', price: 150, hasDrink: true, hasSoup: true, note: '附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '辣味干貝醬炒飯', price: 150, hasDrink: true, hasSoup: true, note: '附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '鮭魚炒飯', price: 160, hasDrink: true, hasSoup: true, note: '附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '蝦仁炒飯', price: 160, hasDrink: true, hasSoup: true, note: '附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
                 ],
                 snacks: [
-                    { name: '厚片 【巧克力/花生/奶酥】', price: 70, options: { type: 'single', label: '選擇口味', choices: ['巧克力', '花生', '奶酥'] } },
-                    { name: '薯條', price: 75 },
-                    { name: '雞塊', price: 75 },
-                    { name: '洋蔥圈', price: 75 },
-                    { name: '焗烤厚片 【鮪魚/玉米/燻雞肉】', price: 95, options: { type: 'single', label: '選擇口味', choices: ['鮪魚', '玉米', '燻雞肉'] } },
-                    { name: '素食三明治', price: 100 },
-                    { name: '燻雞肉/鮪魚 三明治', price: 120, options: { type: 'single', label: '選擇口味', choices: ['燻雞肉', '鮪魚'] } },
-                    { name: '優格水果生菜沙拉', price: 160 },
-                    { name: 'QQ 巧克力鬆餅', price: 180 },
-                    { name: '鬆餅 【水果／冰淇淋】', price: 200, options: { type: 'single', label: '選擇口味', choices: ['水果', '冰淇淋'] } },
-                    { name: '黑糖麻吉冰淇淋鬆餅', price: 200 },
+                    { name: '厚片 【巧克力/花生/奶酥】', price: 60, options: { type: 'single', label: '選擇口味', choices: ['巧克力', '花生', '奶酥'] } },
+                    { name: '薯條', price: 65 },
+                    { name: '雞塊', price: 65 },
+                    { name: '洋蔥圈', price: 65 },
+                    { name: '焗烤厚片 【鮪魚/玉米/燻雞肉】', price: 80, options: { type: 'single', label: '選擇口味', choices: ['鮪魚', '玉米', '燻雞肉'] } },
+                    { name: '素食三明治', price: 85 },
+                    { name: '燻雞肉/鮪魚 三明治', price: 100, options: { type: 'single', label: '選擇口味', choices: ['燻雞肉', '鮪魚'] } },
+                    { name: '優格水果生菜沙拉', price: 130 },
+                    { name: 'QQ 巧克力鬆餅', price: 135 },
+                    { name: '鬆餅 【水果／冰淇淋】', price: 150, options: { type: 'single', label: '選擇口味', choices: ['水果', '冰淇淋'] } },
+                    { name: '黑糖麻吉冰淇淋鬆餅', price: 150 },
                 ],
                 chinese: [
-                    { name: '紫蘇梅雞腿飯', price: 280, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
-                    { name: '日式咖哩炸豬排飯', price: 280, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
-                    { name: '薑汁燒肉飯', price: 280, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
-                    { name: '乳酪焗雞腿飯', price: 280, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
-                    { name: '椒麻雞腿飯', price: 290, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
-                    { name: '蘿蔔牛肉豆腐煲', price: 330, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
-                    { name: '綠咖哩雞肉煲', price: 330, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
-                    { name: '黑胡椒牛柳飯', price: 330, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
-                    { name: '三杯雞腿肉飯', price: 350, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
-                    { name: '醬燒鮭魚飯', price: 350, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
-                    { name: '照燒烤青花魚飯', price: 380, hasDrink: true, hasSoup: true, note: '套餐均附隨餐附湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*隨餐附湯換濃湯需加 15 元' },
+                    // 中式套餐：附隨餐附湯，可換玉米濃湯+15元
+                    { name: '紫蘇梅雞腿飯', price: 210, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '日式咖哩炸豬排飯', price: 210, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '薑汁燒肉飯', price: 210, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '乳酪焗雞腿飯', price: 210, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '椒麻雞腿飯', price: 210, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '羅勒牛肉豆腐煲', price: 250, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '綠咖哩雞肉煲', price: 250, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '黑胡椒牛柳飯', price: 250, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '三杯雞腿肉飯', price: 260, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '醬燒鮭魚飯', price: 260, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '照燒烤青花魚飯', price: 280, hasDrink: true, hasSoup: true, note: '附白飯、例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
                 ],
                 hotpot: [
-                    { name: '什錦火鍋 (豬肉/牛肉)', price: 330, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，換海鮮需加 20 元', options: { type: 'single', label: '選擇肉類', choices: ['豬肉', '牛肉', '海鮮(+20元)'] } },
-                    { name: '香茅火鍋 (豬肉/牛肉)', price: 350, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇肉類', choices: ['豬肉', '牛肉'] } },
-                    { name: '泡麵火鍋 (豬肉/牛肉/海鮮)', price: 350, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
-                    { name: '味噌火鍋 (豬肉/牛肉/海鮮)', price: 350, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
-                    { name: '泰式酸辣咖哩鍋 (豬肉/牛肉/海鮮)', price: 350, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
-                    { name: '泡菜火鍋 (豬肉/牛肉/海鮮)', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
-                    { name: '紅燒牛肉火鍋', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '狗尾草雞肉鍋', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '麻油雞肉鍋', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '鳳梨苦瓜雞肉鍋', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '奶油火鍋 (豬肉/牛肉/海鮮)', price: 380, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】', options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
-                    { name: '剝皮辣椒雞肉鍋', price: 360, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '何首烏雞肉鍋 (季節限定)', price: 400, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '藥膳羊肉鍋 (季節限定)', price: 400, hasDrink: true, note: '以上均附白飯或泡麵鍋(火鍋除外)、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    // 小火鍋：附白飯或河粉（下拉選單）、水果、飲料
+                    { name: '什錦火鍋 (豬肉/牛肉)', price: 250, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換海鮮+20元',
+                      options: { type: 'single', label: '選擇肉類', choices: ['豬肉', '牛肉', '海鮮(+20元)'] } },
+                    { name: '香茅火鍋 (豬肉/牛肉)', price: 260, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇肉類', choices: ['豬肉', '牛肉'] } },
+                    { name: '泡麵火鍋 (豬肉/牛肉/海鮮)', price: 260, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
+                    { name: '味噌火鍋 (豬肉/牛肉/海鮮)', price: 260, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
+                    { name: '泰式酸辣咖哩鍋 (豬肉/牛肉/海鮮)', price: 280, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
+                    { name: '泡菜火鍋 (豬肉/牛肉/海鮮)', price: 280, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
+                    { name: '紅燒牛肉火鍋', price: 280, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '狗尾草雞肉鍋', price: 280, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '麻油雞肉鍋', price: 280, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '鳳梨苦瓜雞肉鍋', price: 280, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '奶油火鍋 (豬肉/牛肉/海鮮)', price: 300, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】',
+                      options: { type: 'single', label: '選擇配料', choices: ['豬肉', '牛肉', '海鮮'] } },
+                    { name: '剝皮辣椒雞肉鍋', price: 280, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '何首烏雞肉鍋 (季節限定)', price: 320, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    { name: '藥膳羊肉鍋 (季節限定)', price: 320, hasDrink: true, hasRice: true, note: '附白飯或河粉、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
                 ],
                 european: [
-                    { name: '義大利肉醬麵', price: 230, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '培根蘑菇雞肉義大利麵', price: 260, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '拿坡里茄汁海鮮義大利麵', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '川味麻辣雞肉義大利麵', price: 260, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '白酒蛤蠣義大利麵', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '青醬燻雞肉義大利麵', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '泰式椒麻海鮮義大利麵', price: 270, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '奶油海鮮義大利麵', price: 290, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '青醬白酒海鮮義大利麵', price: 290, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '羅勒海鮮墨魚義大利麵', price: 290, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
-                    { name: '黑胡椒牛肉義大利麵', price: 290, hasDrink: true, hasSoup: true, note: '附贈：水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】' },
+                    // 歐風料理：可選加焗烤+50元、換捲麵+30元、加直麵+25元
+                    { name: '義大利肉醬麵', price: 175, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '培根蘑菇雞肉義大利麵', price: 195, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '拿坡里茄汁海鮮義大利麵', price: 200, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '川味麻辣雞肉義大利麵', price: 195, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '白酒蛤蠣義大利麵', price: 200, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '青醬燻雞肉義大利麵', price: 200, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '泰式椒麻海鮮義大利麵', price: 200, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '奶油海鮮義大利麵', price: 220, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '青醬白酒海鮮義大利麵', price: 220, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '羅勒海鮮墨魚義大利麵', price: 220, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
+                    { name: '黑胡椒牛肉義大利麵', price: 220, hasDrink: true, hasSoup: true, hasEuroUpgrade: true, note: '附例湯、水果、飲料【咖啡/紅茶/奶茶/酸梅湯/決明子】，*換濃湯+15元' },
                 ],
                 soup: [
-                    { name: '酥皮玉米濃湯', price: 130 },
-                    { name: '酥皮海鮮濃湯', price: 160 },
-                    { name: '酥皮南瓜海鮮濃湯', price: 170 },
-                    { name: '海鮮濃湯', price: 110 },
-                    { name: '南瓜海鮮濃湯', price: 120 },
-                    { name: '玉米濃湯 (小)', price: 50 },
-                    { name: '玉米濃湯 (大)', price: 80 },
-                    { name: '單點酥皮', price: 50 },
+                    { name: '酥皮玉米濃湯', price: 110 },
+                    { name: '酥皮海鮮濃湯', price: 145 },
+                    { name: '酥皮南瓜海鮮濃湯', price: 155 },
+                    { name: '海鮮濃湯', price: 100 },
+                    { name: '南瓜海鮮濃湯', price: 110 },
+                    { name: '玉米濃湯 (小)', price: 45 },
+                    { name: '玉米濃湯 (大)', price: 75 },
+                    { name: '單點酥皮', price: 45 },
                 ]
             },
             meetsecret: {
@@ -1326,15 +1346,57 @@
                 }
             }
 
-            // 湯品選擇（只有標記hasSoup的才顯示）
-            if (item.hasSoup) {
+            // ── 湯品 / 主食 / 歐風升級 ───────────────────────────
+
+            // 焗烤類、燉飯類：固定附玉米濃湯，不可換，僅顯示文字
+            if (item.hasSoup === 'gratin') {
                 html += `
-                    <label>選擇湯品</label>
+                    <label>附餐湯品</label>
+                    <select class="option-select soup-select" disabled style="background:#f0f4ff;color:#555;">
+                        <option value="玉米濃湯（隨餐附贈）">玉米濃湯（隨餐附贈）</option>
+                    </select>
+                `;
+            }
+            // 素食類：固定附隨餐附湯，不可換
+            else if (item.hasSoup === 'fixed') {
+                html += `
+                    <label>附餐湯品</label>
+                    <select class="option-select soup-select" disabled style="background:#f0f4ff;color:#555;">
+                        <option value="隨餐附湯（隨餐附贈）">隨餐附湯（隨餐附贈）</option>
+                    </select>
+                `;
+            }
+            // 一般類（炒飯、中式套餐、歐風）：可換玉米濃湯+15元
+            else if (item.hasSoup === true) {
+                html += `
+                    <label>湯品選擇</label>
                     <select class="option-select soup-select">
-                        <option value="隨餐附湯">隨餐附湯</option>
-                        <option value="玉米濃湯 (+15元)">玉米濃湯 (+15元)</option>
-                        <option value="南瓜濃湯 (+15元)">南瓜濃湯 (+15元)</option>
-                        <option value="蘑菇濃湯 (+15元)">蘑菇濃湯 (+15元)</option>
+                        <option value="隨餐附湯">隨餐附湯（免費）</option>
+                        <option value="玉米濃湯 (+15元)">換玉米濃湯（+$15）</option>
+                    </select>
+                `;
+            }
+
+            // 小火鍋：白飯或河粉下拉選單
+            if (item.hasRice) {
+                html += `
+                    <label>主食選擇</label>
+                    <select class="option-select rice-select">
+                        <option value="白飯">白飯</option>
+                        <option value="河粉">河粉</option>
+                    </select>
+                `;
+            }
+
+            // 歐風料理升級選項
+            if (item.hasEuroUpgrade) {
+                html += `
+                    <label>加點升級（選填）</label>
+                    <select class="option-select euro-upgrade-select">
+                        <option value="">不升級</option>
+                        <option value="加直麵 (+25元)">加直麵（+$25）</option>
+                        <option value="換捲麵 (+30元)">換捲麵（+$30）</option>
+                        <option value="加焗烤 (+50元)">加焗烤（+$50）</option>
                     </select>
                 `;
             }
@@ -1463,10 +1525,22 @@
                     options.push(`飲料:${drink}`);
                 } else if (select.classList.contains('soup-select')) {
                     soup = select.value;
-                    options.push(`湯品:${soup}`);
-                    // 如果選擇濃湯，加 15 元
-                    if (soup.includes('+15元')) {
-                        price += 15;
+                    // 固定附贈的湯（disabled）不顯示在選項文字、不加價
+                    if (!select.disabled) {
+                        options.push(`湯品:${soup}`);
+                        if (soup.includes('+15元')) {
+                            price += 15;
+                        }
+                    }
+                } else if (select.classList.contains('rice-select')) {
+                    // 白飯/河粉選擇
+                    options.push(`主食:${select.value}`);
+                } else if (select.classList.contains('euro-upgrade-select')) {
+                    // 歐風升級
+                    if (select.value) {
+                        options.push(select.value);
+                        const match = select.value.match(/\+(\d+)元/);
+                        if (match) price += parseInt(match[1]);
                     }
                 } else {
                     options.push(select.value);
@@ -1731,7 +1805,7 @@
                 'userExt':      orderData.userExt || '',
                 'note':         orderData.userNote || '',
                 'orderTotal':   orderData.total,
-                'notifyEmails': 'wumas67@gmail.com,donkevin.tw@gmail.com,kevindon@ms.greatwall.com.tw',
+                'notifyEmails': 'donkevin.tw@gmail.com,kevindon@ms.greatwall.com.tw',
                 // 所有品項序列化
                 'itemsJson': JSON.stringify(orderData.items.map(item => ({
                     restaurant: item.restaurant === 'positano' ? 'Positano 波希塔諾'
@@ -1852,3 +1926,4 @@
         }
     </script>
 </body>
+</html>
