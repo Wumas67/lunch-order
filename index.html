@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大成公司幸福600餐點訂購</title>
+    <title>大成公司幸福600餐團購系統</title>
     <style>
         * {
             margin: 0;
@@ -526,7 +526,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🍱 大成公司幸福600餐團購</h1>
+            <h1>🍱 大成公司幸福600餐團購系統</h1>
             <p>請選擇餐廳並填寫訂餐資訊</p>
             
             <div class="notice">
@@ -560,6 +560,9 @@
             </button>
             <button class="tab" onclick="switchRestaurant('meetsecret')">
                 🥗 Meet Secret 遇見秘境素食餐廳
+            </button>
+            <button class="tab" onclick="switchRestaurant('maku')">
+                🧋 麻古茶坊
             </button>
         </div>
 
@@ -645,6 +648,55 @@
                 <div class="category">
                     <h3>🥟 點心 & 湯品 SOUP & FRIED FOOD</h3>
                     <div class="menu-items" id="meetsecret-snacks"></div>
+                </div>
+            </div>
+
+            <!-- 麻古茶坊 菜單 -->
+            <div id="maku-menu" class="menu-section">
+                <!-- 飲中甜品 -->
+                <div class="category">
+                    <h3>🍓 飲中甜品 DRINKING DESSERT</h3>
+                    <div class="menu-items" id="maku-dessert"></div>
+                </div>
+                <!-- 果粒茶系列 -->
+                <div class="category">
+                    <h3>🍊 果粒茶系列 FRESH FRUIT BEVERAGES</h3>
+                    <div class="menu-items" id="maku-fruittea"></div>
+                </div>
+                <!-- 原味茶 -->
+                <div class="category">
+                    <h3>🍵 原味茶 ORIGINAL TEA</h3>
+                    <div class="menu-items" id="maku-originaltea"></div>
+                </div>
+                <!-- 濃醇系列 -->
+                <div class="category">
+                    <h3>🥛 濃醇系列 MILK TEA COLLECTION</h3>
+                    <div class="menu-items" id="maku-milktea"></div>
+                </div>
+                <!-- 經典特調 -->
+                <div class="category">
+                    <h3>⭐ 經典特調 CLASSIC SIGNATURE</h3>
+                    <div class="menu-items" id="maku-classic"></div>
+                </div>
+                <!-- 鮮果茶飲 -->
+                <div class="category">
+                    <h3>🍋 鮮果茶飲 FRESH JUICE BEVERAGES</h3>
+                    <div class="menu-items" id="maku-freshfruit"></div>
+                </div>
+                <!-- 芝芝系列 -->
+                <div class="category">
+                    <h3>🧀 芝芝系列 CHEESE TEA COLLECTION</h3>
+                    <div class="menu-items" id="maku-cheese"></div>
+                </div>
+                <!-- 寶石系列 -->
+                <div class="category">
+                    <h3>💎 寶石系列 GEM SERIES（無咖啡因）</h3>
+                    <div class="menu-items" id="maku-gem"></div>
+                </div>
+                <!-- 鮮奶系列 -->
+                <div class="category">
+                    <h3>🥛 鮮奶系列 FRESH MILK TEA</h3>
+                    <div class="menu-items" id="maku-freshmilk"></div>
                 </div>
             </div>
 
@@ -886,6 +938,99 @@
             }
         };
 
+        // ── 麻古茶坊菜單資料（依實體菜單） ──────────────────────
+        const makuMenuData = {
+            dessert: [
+                { name: '酪梨草莓甘露【季節限定 2-3月】', price: 90, sizePrices: { L: 90 }, note: '飲中甜品・冰沙冰量固定' },
+                { name: '芝芝草莓果粒【季節限定 2-3月】', price: 90, sizePrices: { L: 90 }, note: '飲中甜品・冰沙冰量固定' },
+                { name: '草莓果粒波波【季節限定 2-3月】', price: 90, sizePrices: { L: 90 }, note: '飲中甜品・冰沙冰量固定' },
+                { name: '金羲芋泥鮮奶【11-3月】', price: 75, sizePrices: { M: 75 }, note: '飲中甜品・咖啡冰/熱' },
+                { name: '芋泥波波鮮奶 2.0【11-3月】', price: 65, sizePrices: { M: 65 }, note: '飲中甜品・咖啡冰/熱' },
+                { name: '濃厚芋泥鮮奶【11-3月】', price: 65, sizePrices: { M: 65 }, note: '飲中甜品・咖啡冰/熱' },
+                { name: '巨峰葡萄冰沙【10-6月】', price: 75, sizePrices: { L: 75 }, note: '飲中甜品・冰沙' },
+                { name: '芝芝葡萄果粒【10-8月】', price: 85, sizePrices: { L: 85 }, note: '飲中甜品' },
+                { name: '葡萄果粒波波【10-8月】', price: 85, sizePrices: { L: 85 }, note: '飲中甜品' },
+                { name: '酪梨甘露【5-8月】', price: 85, sizePrices: { L: 85 }, note: '飲中甜品・冰沙冰量固定' },
+                { name: '楊枝甘露 2.0【5-8月】', price: 85, sizePrices: { L: 85 }, note: '飲中甜品・咖啡冰/熱' },
+                { name: '芒芝芒果果粒【5-8月】', price: 90, sizePrices: { L: 90 }, note: '飲中甜品' },
+                { name: '芒果果粒波波【5-7月】', price: 85, sizePrices: { L: 85 }, note: '飲中甜品' },
+                { name: '番茄蜂蜜梅【4月】', price: 70, sizePrices: { M: 70, L: 100 }, note: '飲中甜品' },
+                { name: '番茄蜂蜜梅波波【4月】', price: 80, sizePrices: { M: 80, L: 110 }, note: '飲中甜品' },
+            ],
+            fruittea: [
+                { name: '香橙果粒茶', price: 75, sizePrices: { L: 75, 瓶: 105 } },
+                { name: '柳橙果粒茶', price: 70, sizePrices: { L: 70, 瓶: 100 } },
+                { name: '葡萄柚果粒茶', price: 65, sizePrices: { L: 65, 瓶: 95 } },
+                { name: '葡萄柚果粒蜜茶', price: 65, sizePrices: { L: 65, 瓶: 95 } },
+                { name: '柳橙芒果果粒茶【5-7月】', price: 75, sizePrices: { L: 75 } },
+            ],
+            originaltea: [
+                { name: '粉粿金萱', price: 40, sizePrices: { L: 40, 瓶: 55 } },
+                { name: '紅萱烏龍', price: 35, sizePrices: { L: 35, 瓶: 50 } },
+                { name: '高山金萱茶', price: 30, sizePrices: { L: 30, 瓶: 45 } },
+                { name: '翡翠綠茶', price: 30, sizePrices: { L: 30, 瓶: 45 } },
+                { name: '錫蘭紅茶', price: 30, sizePrices: { L: 30, 瓶: 45 } },
+                { name: '文山青茶', price: 30, sizePrices: { L: 30, 瓶: 45 } },
+                { name: '古早味紅茶', price: 30, sizePrices: { L: 30, 瓶: 45 } },
+                { name: '紅萱雙Q', price: 45, sizePrices: { L: 45, 瓶: 60 } },
+                { name: '金萱雙Q', price: 40, sizePrices: { L: 40, 瓶: 55 } },
+            ],
+            milktea: [
+                { name: '錫蘭奶茶', price: 50, sizePrices: { L: 50, 瓶: 75 } },
+                { name: '鐵觀音奶茶', price: 50, sizePrices: { L: 50, 瓶: 75 } },
+                { name: '波霸奶茶', price: 50, sizePrices: { L: 50, 瓶: 75 } },
+                { name: '仙草凍奶茶', price: 50, sizePrices: { L: 50, 瓶: 75 } },
+                { name: '玫瑰奶茶【品品含含特選】', price: 60, sizePrices: { L: 60, 瓶: 85 } },
+                { name: '阿華田', price: 60, sizePrices: { L: 60, 瓶: 85 } },
+            ],
+            classic: [
+                { name: '梅子冰茶【國際限定】', price: 35, sizePrices: { L: 35, 瓶: 50 } },
+                { name: '梅子綠茶', price: 45, sizePrices: { L: 45 } },
+                { name: '多多綠茶', price: 50, sizePrices: { L: 50, 瓶: 80 } },
+            ],
+            freshfruit: [
+                { name: '粉粿橙香紅萱', price: 75, sizePrices: { L: 75, 瓶: 105 } },
+                { name: '橙香紅萱', price: 65, sizePrices: { L: 65, 瓶: 95 } },
+                { name: '柚香紅萱', price: 60, sizePrices: { L: 60, 瓶: 90 } },
+                { name: '百香雙Q果', price: 60, sizePrices: { L: 60, 瓶: 80 } },
+                { name: '百香綠茶', price: 55, sizePrices: { L: 55, 瓶: 75 } },
+                { name: '百香多多', price: 60, sizePrices: { L: 60 } },
+                { name: '翡翠柳橙', price: 60, sizePrices: { L: 60, 瓶: 90 } },
+                { name: '粉粿冰萃檸檬', price: 60, sizePrices: { L: 60 } },
+                { name: '冰萃檸檬', price: 50, sizePrices: { L: 50 } },
+                { name: '蜂蜜檸檬', price: 60, sizePrices: { L: 60 } },
+                { name: '柚香翡翠', price: 55, sizePrices: { L: 55, 瓶: 85 } },
+            ],
+            cheese: [
+                { name: '芝芝金萱/錫蘭紅茶', price: 50, sizePrices: { L: 50 }, note: '冷/熱' },
+                { name: '芝芝金萱雙Q', price: 60, sizePrices: { L: 60 }, note: '冷/熱' },
+                { name: '芝芝翡翠綠茶', price: 50, sizePrices: { L: 50 }, note: '冷/熱' },
+                { name: '芝芝錫蘭奶茶', price: 65, sizePrices: { L: 65 }, note: '冷/熱' },
+                { name: '芝芝阿華田', price: 80, sizePrices: { L: 80 }, note: '冷/熱' },
+            ],
+            gem: [
+                { name: '蕎麥綠寶石', price: 40, sizePrices: { L: 40, 瓶: 55 }, note: '無咖啡因・冷/熱' },
+            ],
+            freshmilk: [
+                { name: '粉粿紅茶拿鐵', price: 65, sizePrices: { L: 65, 瓶: 95 } },
+                { name: '紅茶拿鐵', price: 65, sizePrices: { L: 65, 瓶: 95 }, note: '冷/熱' },
+                { name: '鐵觀音拿鐵', price: 65, sizePrices: { L: 65, 瓶: 95 }, note: '冷/熱' },
+                { name: '波霸紅茶拿鐵', price: 65, sizePrices: { L: 65, 瓶: 95 } },
+                { name: '仙草凍紅茶拿鐵', price: 65, sizePrices: { L: 65, 瓶: 95 } },
+                { name: '阿華田拿鐵', price: 65, sizePrices: { L: 65, 瓶: 95 }, note: '冷/熱' },
+                { name: '玫瑰紅茶拿鐵【品品含含特選】', price: 70, sizePrices: { L: 70, 瓶: 100 }, note: '冷/熱' },
+            ],
+        };
+
+        // 麻古甜度選項
+        const makuSweetnessOptions = ['無糖(0%)', '一分糖(10%)', '三分糖(30%)', '半糖(50%)', '八分糖(80%)', '正常糖(100%)'];
+        // 麻古冰量選項
+        const makuIceOptions = ['去冰(0%)', '微冰(30%)', '少冰(50%)', '正常冰(100%)'];
+        // 加料 +10元
+        const makuToppings10 = ['粉粿', '椰果', '波霸', '雙Q果', '波波', '綠茶凍', '仙草凍', '養樂多'];
+        // 加料 +20元
+        const makuToppings20 = ['芝芝'];
+
         let cart = [];
         let currentRestaurant = 'positano';
 
@@ -914,6 +1059,196 @@
                     });
                 }
             });
+
+            // 麻古茶坊菜單
+            Object.keys(makuMenuData).forEach(category => {
+                const container = document.getElementById(`maku-${category}`);
+                if (container) {
+                    makuMenuData[category].forEach(item => {
+                        container.appendChild(createMakuItem(item, category));
+                    });
+                }
+            });
+        }
+
+        // ── 麻古茶坊單品建立 ─────────────────────────────────────
+        function createMakuItem(item, category) {
+            const div = document.createElement('div');
+            div.className = 'menu-item';
+
+            // 建立尺寸選項陣列
+            const sizeEntries = item.sizePrices
+                ? Object.entries(item.sizePrices).map(([size, p]) => ({ size, price: p }))
+                : [{ size: 'L', price: item.price }];
+
+            const defaultPrice = sizeEntries[0].price;
+
+            // 價格區：顯示各尺寸供參考，展開後由選單決定
+            let priceHtml = sizeEntries.map(({ size, price }) =>
+                `<div class="price-row"><span class="price-label">${size === '瓶' ? '瓶' : 'L'}</span> $${price}</div>`
+            ).join('');
+
+            let html = `
+                <div class="item-header">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-prices">${priceHtml}</div>
+                </div>
+            `;
+            if (item.note) {
+                html += `<div class="item-description" style="color:#28a745;font-weight:500;">${item.note}</div>`;
+            }
+
+            html += `<div class="options-group">`;
+
+            // 杯型 / 規格（有多種尺寸才顯示選單，單一尺寸仍用 select 以統一讀值方式）
+            html += `
+                <label>杯型／規格</label>
+                <select class="option-select maku-size">
+                    ${sizeEntries.map(({ size, price }) =>
+                        `<option value="${size}|${price}">${size === '瓶' ? '瓶裝（外帶瓶）' : 'L 大杯'} — $${price}</option>`
+                    ).join('')}
+                </select>
+            `;
+
+            // 甜度
+            html += `
+                <label>甜度</label>
+                <select class="option-select maku-sweetness">
+                    ${makuSweetnessOptions.map(s => `<option value="${s}">${s}</option>`).join('')}
+                </select>
+            `;
+            // 冰量
+            html += `
+                <label>冰量</label>
+                <select class="option-select maku-ice">
+                    ${makuIceOptions.map(i => `<option value="${i}">${i}</option>`).join('')}
+                </select>
+            `;
+            // 加料
+            html += `
+                <label>添加口感（加料）</label>
+                <select class="option-select maku-topping">
+                    <option value="">不加料</option>
+                    <optgroup label="＋$10 加料">
+                        ${makuToppings10.map(t => `<option value="${t}|10">${t}（+$10）</option>`).join('')}
+                    </optgroup>
+                    <optgroup label="＋$20 加料">
+                        ${makuToppings20.map(t => `<option value="${t}|20">${t}（+$20）</option>`).join('')}
+                    </optgroup>
+                </select>
+            `;
+
+            html += `</div>`;
+            html += `
+                <div class="quantity-control">
+                    <button class="qty-btn minus">-</button>
+                    <div class="qty-display">1</div>
+                    <button class="qty-btn plus">+</button>
+                </div>
+                <button class="add-to-cart-btn" style="display: none;">✓ 加入訂單</button>
+            `;
+
+            div.innerHTML = html;
+
+            // 點擊整體 item 展開選項
+            div.addEventListener('click', function(e) {
+                if (e.target.classList.contains('qty-btn') ||
+                    e.target.classList.contains('option-select') ||
+                    e.target.classList.contains('add-to-cart-btn') ||
+                    e.target.closest('.options-group')) {
+                    e.stopPropagation();
+                    return;
+                }
+                toggleItem(div, 'maku', item, category);
+            });
+
+            const minusBtn = div.querySelector('.minus');
+            const plusBtn  = div.querySelector('.plus');
+            const addBtn   = div.querySelector('.add-to-cart-btn');
+
+            minusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const qtyDisplay = div.querySelector('.qty-display');
+                let qty = Math.max(1, parseInt(qtyDisplay.textContent) - 1);
+                qtyDisplay.textContent = qty;
+                const key = getMakuItemKey(div, item);
+                const ci = cart.find(c => c.key === key);
+                if (ci) { ci.qty = qty; updateCartDisplay(); }
+            });
+
+            plusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const qtyDisplay = div.querySelector('.qty-display');
+                let qty = parseInt(qtyDisplay.textContent) + 1;
+                qtyDisplay.textContent = qty;
+                const key = getMakuItemKey(div, item);
+                const ci = cart.find(c => c.key === key);
+                if (ci) { ci.qty = qty; updateCartDisplay(); }
+            });
+
+            addBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const qty = parseInt(div.querySelector('.qty-display').textContent);
+                addMakuToCart(div, item, qty);
+                const orig = addBtn.textContent;
+                addBtn.textContent = '✓ 已加入';
+                addBtn.style.background = '#28a745';
+                setTimeout(() => { addBtn.textContent = orig; addBtn.style.background = ''; }, 1000);
+            });
+
+            div.querySelectorAll('.option-select').forEach(s => s.addEventListener('click', e => e.stopPropagation()));
+
+            return div;
+        }
+
+        function getMakuSelectedOptions(element, item) {
+            const sweetness  = element.querySelector('.maku-sweetness')?.value || '';
+            const ice        = element.querySelector('.maku-ice')?.value || '';
+            const toppingVal = element.querySelector('.maku-topping')?.value || '';
+
+            // 讀取尺寸選單（統一用 select.maku-size）
+            const sizeEl  = element.querySelector('.maku-size');
+            const sizeVal = sizeEl ? sizeEl.value : '';
+            let sizeName  = 'L 大杯';
+            let basePrice = item.price;
+            if (sizeVal) {
+                const parts = sizeVal.split('|');
+                sizeName  = parts[0] === '瓶' ? '瓶裝' : 'L 大杯';
+                basePrice = parseInt(parts[1]) || item.price;
+            }
+
+            let toppingName  = '';
+            let toppingPrice = 0;
+            if (toppingVal) {
+                const parts  = toppingVal.split('|');
+                toppingName  = parts[0];
+                toppingPrice = parseInt(parts[1]) || 0;
+            }
+
+            const totalPrice = basePrice + toppingPrice;
+
+            const optParts = [sizeName, sweetness, ice];
+            if (toppingName) optParts.push(`加料:${toppingName}(+$${toppingPrice})`);
+
+            return { optionsText: optParts.join(' / '), price: totalPrice };
+        }
+
+        function getMakuItemKey(element, item) {
+            const { optionsText } = getMakuSelectedOptions(element, item);
+            return `maku-${item.name}-${optionsText}`;
+        }
+
+        function addMakuToCart(element, item, qty) {
+            const key = getMakuItemKey(element, item);
+            const { optionsText, price } = getMakuSelectedOptions(element, item);
+            const existingIndex = cart.findIndex(c => c.key === key);
+            if (existingIndex >= 0) {
+                cart[existingIndex].qty = qty;
+                cart[existingIndex].element = element;
+            } else {
+                cart.push({ key, element, restaurant: 'maku', name: item.name, options: optionsText, price, qty });
+            }
+            updateCartDisplay();
         }
 
         function createMenuItem(restaurant, item, category) {
@@ -1243,6 +1578,24 @@
                     `;
                 });
             }
+
+            const makuItems = cart.filter(item => item.restaurant === 'maku');
+            if (makuItems.length > 0) {
+                html += '<div style="font-weight: 600; color: #e74c3c; margin: 10px 0;">🧋 麻古茶坊</div>';
+                makuItems.forEach((item) => {
+                    const subtotal = item.price * item.qty;
+                    total += subtotal;
+                    html += `
+                        <div class="cart-item">
+                            <div class="cart-item-name">${item.name}</div>
+                            ${item.options ? `<div class="cart-item-option">${item.options}</div>` : ''}
+                            <div class="cart-item-qty">數量: ${item.qty}</div>
+                            <div class="cart-item-price">$${subtotal}</div>
+                            <button class="remove-btn" onclick="removeCartItem('${item.key}')">刪除</button>
+                        </div>
+                    `;
+                });
+            }
             
             cartItems.innerHTML = html;
             totalAmount.textContent = `$${total}`;
@@ -1322,7 +1675,7 @@
             `;
             
             cart.forEach(item => {
-                const restaurantName = item.restaurant === 'positano' ? 'Positano' : 'Meet Secret';
+                const restaurantName = item.restaurant === 'positano' ? 'Positano' : item.restaurant === 'meetsecret' ? 'Meet Secret' : '麻古茶坊';
                 summary += `<div>・${item.name}${item.options ? ' (' + item.options + ')' : ''} × ${item.qty} ($${item.price * item.qty}) - ${restaurantName}</div>`;
             });
             
@@ -1368,7 +1721,7 @@
             const totalItems = orderData.items.length;
             
             orderData.items.forEach((item, index) => {
-                const restaurantName = item.restaurant === 'positano' ? 'Positano 波希塔諾' : 'Meet Secret 遇見秘境';
+                const restaurantName = item.restaurant === 'positano' ? 'Positano 波希塔諾' : item.restaurant === 'meetsecret' ? 'Meet Secret 遇見秘境' : '麻古茶坊';
                 
                 // 建立隱藏的表單
                 const form = document.createElement('form');
@@ -1390,7 +1743,8 @@
                     'unitPrice': item.price,
                     'subtotal': item.price * item.qty,
                     'orderTotal': index === 0 ? orderData.total : '',
-                    'note': index === 0 ? orderData.userNote : ''
+                    'note': index === 0 ? orderData.userNote : '',
+                    'notifyEmails': index === 0 ? 'donkevin.tw@gmail.com,kevindon@ms.greatwall.com.tw' : ''
                 };
                 
                 Object.keys(fields).forEach(key => {
@@ -1438,7 +1792,8 @@
 
         function sendEmailNotification(orderData) {
             // Email 通知已整合在 Google Apps Script 中
-            console.log('Email 通知將由 Google Apps Script 自動發送到 wumas67@gmail.com');
+            // 收件人：donkevin.tw@gmail.com, kevindon@ms.greatwall.com.tw
+            console.log('Email 通知將由 Google Apps Script 自動發送到：donkevin.tw@gmail.com, kevindon@ms.greatwall.com.tw');
         }
 
         function generateEmailBody(orderData) {
@@ -1455,7 +1810,7 @@
             body += `========================================\n`;
             
             orderData.items.forEach(item => {
-                const restaurantName = item.restaurant === 'positano' ? 'Positano' : 'Meet Secret';
+                const restaurantName = item.restaurant === 'positano' ? 'Positano' : item.restaurant === 'meetsecret' ? 'Meet Secret' : '麻古茶坊';
                 body += `${item.name}`;
                 if (item.options) body += ` (${item.options})`;
                 body += ` × ${item.qty} = $${item.price * item.qty} - ${restaurantName}\n`;
@@ -1512,6 +1867,3 @@
             
             updateCartDisplay();
         }
-    </script>
-</body>
-</html>
