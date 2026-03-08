@@ -1710,84 +1710,67 @@
         }
 
         function sendToGoogleForm(orderData) {
-            // Google Apps Script URL（已更新）
             const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0h-j-zCb3ptNcwokTTQS0Ut7QwhFbbIIi8G__ijYC8TFViCj00F6fOr15MjVsugkSWw/exec';
-            
+
             console.log('準備發送訂單到 Google Apps Script');
             console.log('訂單資料:', orderData);
-            
-            // 建立一個隱藏的 iframe 來發送資料（避免 CORS 問題）
-            let submitted = 0;
-            const totalItems = orderData.items.length;
-            
-            orderData.items.forEach((item, index) => {
-                const restaurantName = item.restaurant === 'positano' ? 'Positano 波希塔諾' : item.restaurant === 'meetsecret' ? 'Meet Secret 遇見秘境' : '麻古茶坊';
-                
-                // 建立隱藏的表單
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = scriptUrl;
-                form.target = 'hidden-iframe-' + index;
-                form.style.display = 'none';
-                
-                // 添加表單欄位
-                const fields = {
-                    'timestamp': orderData.timestamp,
-                    'userName': orderData.userName,
-                    'userDept': orderData.userDept,
-                    'userExt': orderData.userExt || '',
-                    'restaurant': restaurantName,
-                    'dishName': item.name,
-                    'options': item.options || '',
-                    'quantity': item.qty,
-                    'unitPrice': item.price,
-                    'subtotal': item.price * item.qty,
-                    'orderTotal': index === 0 ? orderData.total : '',
-                    'note': index === 0 ? orderData.userNote : '',
-                    'notifyEmails': index === 0 ? 'donkevin.tw@gmail.com,kevindon@ms.greatwall.com.tw' : ''
-                };
-                
-                Object.keys(fields).forEach(key => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = key;
-                    input.value = fields[key];
-                    form.appendChild(input);
-                });
-                
-                // 建立隱藏的 iframe
-                const iframe = document.createElement('iframe');
-                iframe.name = 'hidden-iframe-' + index;
-                iframe.style.display = 'none';
-                
-                // 監聽 iframe 載入完成
-                iframe.onload = function() {
-                    submitted++;
-                    console.log(`已發送 ${submitted}/${totalItems} 筆訂單`);
-                    
-                    if (submitted === totalItems) {
-                        console.log('所有訂單已送出');
-                        setTimeout(() => {
-                            closeModal();
-                            showSuccessMessage();
-                            resetForm();
-                            
-                            // 清理表單和 iframe
-                            document.querySelectorAll('form[target^="hidden-iframe-"]').forEach(f => f.remove());
-                            document.querySelectorAll('iframe[name^="hidden-iframe-"]').forEach(i => i.remove());
-                        }, 1000);
-                    }
-                };
-                
-                // 添加到頁面
-                document.body.appendChild(iframe);
-                document.body.appendChild(form);
-                
-                // 提交表單
-                setTimeout(() => {
-                    form.submit();
-                }, index * 200); // 每筆訂單間隔 200ms
+
+            // 把所有品項序列化為 JSON 字串，一次送出整筆訂單
+            // GS 端收到後逐筆寫入試算表，並寄一封彙整 Email
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = scriptUrl;
+            form.target = 'hidden-iframe-main';
+            form.style.display = 'none';
+
+            // 訂購人資訊
+            const fields = {
+                'timestamp':    orderData.timestamp,
+                'userName':     orderData.userName,
+                'userDept':     orderData.userDept,
+                'userExt':      orderData.userExt || '',
+                'note':         orderData.userNote || '',
+                'orderTotal':   orderData.total,
+                'notifyEmails': 'wumas67@gmail.com,donkevin.tw@gmail.com,kevindon@ms.greatwall.com.tw',
+                // 所有品項序列化
+                'itemsJson': JSON.stringify(orderData.items.map(item => ({
+                    restaurant: item.restaurant === 'positano' ? 'Positano 波希塔諾'
+                              : item.restaurant === 'meetsecret' ? 'Meet Secret 遇見秘境'
+                              : '麻古茶坊',
+                    dishName:  item.name,
+                    options:   item.options || '',
+                    quantity:  item.qty,
+                    unitPrice: item.price,
+                    subtotal:  item.price * item.qty
+                })))
+            };
+
+            Object.keys(fields).forEach(key => {
+                const input = document.createElement('input');
+                input.type  = 'hidden';
+                input.name  = key;
+                input.value = fields[key];
+                form.appendChild(input);
             });
+
+            const iframe = document.createElement('iframe');
+            iframe.name = 'hidden-iframe-main';
+            iframe.style.display = 'none';
+
+            iframe.onload = function() {
+                console.log('訂單已送出');
+                setTimeout(() => {
+                    closeModal();
+                    showSuccessMessage();
+                    resetForm();
+                    form.remove();
+                    iframe.remove();
+                }, 1000);
+            };
+
+            document.body.appendChild(iframe);
+            document.body.appendChild(form);
+            form.submit();
         }
 
         function sendEmailNotification(orderData) {
@@ -1869,4 +1852,3 @@
         }
     </script>
 </body>
-</html>
