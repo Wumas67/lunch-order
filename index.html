@@ -628,19 +628,31 @@
             <div id="meetsecret-menu" class="menu-section">
                 <!-- 熱炒 -->
                 <div class="category">
-                    <h3>🍳 熱炒 STIR-FRIED FOOD</h3>
+                    <h3>🍳 熱炒 STIR-FRIED FOOD <span style="font-size:0.75em;color:#e67e22;">蛋奶素</span></h3>
                     <div class="menu-items" id="meetsecret-stirfry"></div>
+                </div>
+
+                <!-- 簡餐 -->
+                <div class="category">
+                    <h3>🍱 簡餐 SET MEAL <span style="font-size:0.75em;color:#e67e22;">蛋奶素</span></h3>
+                    <div class="menu-items" id="meetsecret-setmeal"></div>
+                </div>
+
+                <!-- 義大利麵 -->
+                <div class="category">
+                    <h3>🍝 義大利麵 PASTA <span style="font-size:0.75em;color:#e67e22;">蛋奶素</span></h3>
+                    <div class="menu-items" id="meetsecret-pasta"></div>
                 </div>
 
                 <!-- 火鍋 -->
                 <div class="category">
-                    <h3>🍲 火鍋 HOT POT</h3>
+                    <h3>🍲 火鍋 HOT POT <span style="font-size:0.75em;color:#e67e22;">蛋奶素</span></h3>
                     <div class="menu-items" id="meetsecret-hotpot"></div>
                 </div>
 
                 <!-- 披薩 -->
                 <div class="category">
-                    <h3>🍕 披薩 PIZZA</h3>
+                    <h3>🍕 披薩 PIZZA <span style="font-size:0.75em;color:#e67e22;">奶素</span></h3>
                     <div class="menu-items" id="meetsecret-pizza"></div>
                 </div>
 
@@ -916,44 +928,93 @@
                 ]
             },
             meetsecret: {
+                // ── 熱炒 STIR-FRIED FOOD ──────────────────────────
+                // 附餐：飲品(四選一)＋當日例湯
+                // 可加點白飯+15、冬粉+15、2片起司+30、意麵+15、王子麵+15
+                // 可加焗烤+40元；可升簡餐+30元(多附3樣小菜＋例湯)
                 stirfry: [
-                    { name: '韓式泡菜炒飯', price: 210, description: 'Kimchi fried rice' },
-                    { name: '鮮蔬炒飯 (可全素)', price: 200, description: 'Vegetable fried rice' },
-                    { name: '焗烤炒飯', price: 240, description: 'Gratin fried rice' },
-                    { name: '焗烤泡菜香腸麵', price: 270, description: 'Gratin Kimchi fried rice' },
-                    { name: '韓式泡菜香腸麵 (可全素)', price: 240, description: 'Korean udon' },
-                    { name: '椒鹽拌炒蔬麵 (可全素)', price: 200, description: 'Spaghetti with Vegetable' },
+                    { name: '韓式泡菜炒飯', price: 210, hasDrink: true, description: 'Kimchi fried rice',
+                      note: '附飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】＋當日例湯' },
+                    { name: '鮮蔬炒飯 (可全素)', price: 200, hasDrink: true, description: 'Vegetable fried rice',
+                      note: '附飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】＋當日例湯' },
+                    { name: '焗烤炒飯', price: 240, hasDrink: true, description: 'Gratin fried rice',
+                      note: '附飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】＋當日例湯' },
+                    { name: '焗烤泡菜炒飯', price: 270, hasDrink: true, description: 'Gratin Kimchi fried rice',
+                      note: '附飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】＋當日例湯' },
+                    { name: '韓式泡菜烏龍麵 (可全素)', price: 240, hasDrink: true, description: 'Kimchi udon',
+                      note: '附飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】＋當日例湯' },
+                    { name: '機燒拌炒時蔬麵 (可全素)', price: 200, hasDrink: true, description: 'Spaghetti with Vegetable',
+                      note: '附飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】＋當日例湯' },
                 ],
+                // ── 簡餐 SET MEAL（附飲品四選一＋當日例湯）─────────
+                // 飯/麵/焗烤+40　簡餐+30(多附3樣小菜＋例湯)
+                setmeal: [
+                    { name: '泰式檸檬雞飯 🌶️', price: 250, hasDrink: true, hasMealUpgrade: true, description: 'Thai lemon chicken',
+                      note: '附飲品(四選一)＋當日例湯；可選飯/麵；加焗烤+40元；升簡餐+30元' },
+                    { name: '黑胡椒牛柳飯', price: 240, hasDrink: true, hasMealUpgrade: true, description: 'Black pepper beef fillet Rice',
+                      note: '附飲品(四選一)＋當日例湯；可選飯/麵；加焗烤+40元；升簡餐+30元' },
+                    { name: '沙茶素羊肉飯', price: 240, hasDrink: true, hasMealUpgrade: true, description: 'Satay mutton Rice',
+                      note: '附飲品(四選一)＋當日例湯；可選飯/麵；加焗烤+40元；升簡餐+30元' },
+                    { name: '起司朱排（黑胡椒）', price: 280, hasDrink: true, hasMealUpgrade: true, description: 'Cheese-Stuffed Pork Chop (Black pepper)',
+                      note: '附飲品(四選一)＋當日例湯；可選飯/麵；加焗烤+40元；升簡餐+30元' },
+                    { name: '藍帶朱排飯', price: 320, hasDrink: true, hasMealUpgrade: true, description: 'Pork Cordon Bleu',
+                      note: '附飲品(四選一)＋當日例湯；可選飯/麵(奶油/茄汁/咖哩)；加焗烤+40元；升簡餐+30元',
+                      options: { type: 'single', label: '選擇醬汁', choices: ['奶油醬', '茄汁醬', '咖哩醬'] } },
+                ],
+                // ── 義大利麵 PASTA（附飲品四選一＋當日例湯）──────────
+                pasta: [
+                    { name: '奶香南瓜義大利麵', price: 245, hasDrink: true, hasMealUpgrade: true, description: 'Milky Pumpkin',
+                      note: '附飲品(四選一)＋當日例湯；加焗烤+40元；升簡餐+30元' },
+                    { name: '咖哩食蔬義大利麵', price: 245, hasDrink: true, hasMealUpgrade: true, description: 'Vegetarian Instant Curry',
+                      note: '附飲品(四選一)＋當日例湯；加焗烤+40元；升簡餐+30元' },
+                    { name: '茄汁田園鮮蔬義大利麵', price: 245, hasDrink: true, hasMealUpgrade: true, description: 'Tomato sauce vegetable',
+                      note: '附飲品(四選一)＋當日例湯；加焗烤+40元；升簡餐+30元' },
+                    { name: '奶油蘑菇培根義大利麵', price: 245, hasDrink: true, hasMealUpgrade: true, description: 'Creamy Mushroom Bacon',
+                      note: '附飲品(四選一)＋當日例湯；加焗烤+40元；升簡餐+30元' },
+                ],
+                // ── 火鍋 HOT POT（附白飯/冬粉 + 飲品四選一）──────────
                 hotpot: [
-                    { name: '蔬食原味鍋', price: 330, hasDrink: true, description: 'Original Vegetables', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
-                    { name: '韓式泡菜鍋', price: 340, hasDrink: true, description: 'Kimchi', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
-                    { name: '特級麻辣鍋', price: 340, hasDrink: true, description: 'Spicy Hot Pot 🌶️🌶️🌶️', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
-                    { name: '京都味噌鍋', price: 340, hasDrink: true, description: 'Miso Hot Pot', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
-                    { name: '蕃茄蔬鍋', price: 340, hasDrink: true, description: 'Tomato soup', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
-                    { name: '日式咖哩鍋', price: 340, hasDrink: true, description: 'Japanese curry 🍛', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
-                    { name: '奶香南瓜鍋', price: 355, hasDrink: true, description: 'Milk pumpkin', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
-                    { name: '藥膳養生鍋', price: 385, hasDrink: true, description: 'Herb-flavored hot pot', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
-                    { name: '起司蔬菜鍋 (無辣椒)', price: 370, hasDrink: true, description: 'Cheese kimchi (with noodles Oodles) 🧀', note: '附餐：飲品(鍋類固定)【特級紅茶/特級奶茶/決明子/黑糖珍奶】、湯' },
+                    { name: '蔬食原味鍋', price: 330, hasDrink: true, hasRice: true, description: 'Original Vegetables',
+                      note: '附白飯或冬粉、飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】' },
+                    { name: '韓式泡菜鍋', price: 340, hasDrink: true, hasRice: true, description: 'Kimchi',
+                      note: '附白飯或冬粉、飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】' },
+                    { name: '特級麻辣鍋 🌶️🌶️🌶️', price: 340, hasDrink: true, hasRice: true, description: 'Spicy Hot Pot',
+                      note: '附白飯或冬粉、飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】' },
+                    { name: '京都味噌鍋', price: 340, hasDrink: true, hasRice: true, description: 'Miso Hot Pot',
+                      note: '附白飯或冬粉、飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】' },
+                    { name: '濃郁番茄鍋', price: 340, hasDrink: true, hasRice: true, description: 'Tomato soup',
+                      note: '附白飯或冬粉、飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】' },
+                    { name: '日式咖哩鍋 🍛', price: 340, hasDrink: true, hasRice: true, description: 'Japanese curry',
+                      note: '附白飯或冬粉、飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】' },
+                    { name: '奶香南瓜鍋', price: 355, hasDrink: true, hasRice: true, description: 'Milk Pumpkin',
+                      note: '附白飯或冬粉、飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】' },
+                    { name: '藥膳養生鍋', price: 385, hasDrink: true, hasRice: true, description: 'Herb-flavored hot pot',
+                      note: '附白飯或冬粉、飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】' },
+                    { name: '起司韓式泡菜鍋 (附王子麵) 🧀', price: 370, hasDrink: true, hasRice: true, description: 'Cheese kimchi (with noodles)',
+                      note: '附白飯或冬粉、飲品(四選一)【特級紅茶/特級奶茶/美式咖啡(無糖)/決明子(無糖)】' },
                 ],
+                // ── 披薩 PIZZA（奶素）──────────────────────────────
                 pizza: [
-                    { name: '蜜糖起司', price: 245, description: 'Honey cheese' },
-                    { name: '蜜糖起司蘋果', price: 245, description: 'Honey Apple Cheese' },
-                    { name: '瑪格莉特', price: 265, description: 'Margarita' },
-                    { name: '蔬食野菇', price: 295, description: 'Vegetable wild mushrooms' },
-                    { name: '海苔雙拼', price: 330, description: 'Surf and Turf' },
+                    { name: '蜜糖起司', price: 245, description: 'Honey cheese 🍕' },
+                    { name: '蜜蘋起司', price: 245, description: 'Honey Apple Cheese 🍕' },
+                    { name: '瑪格莉特', price: 265, description: 'Margarita 🍕' },
+                    { name: '蔬食野菇', price: 295, description: 'Vegetable wild mushrooms 🍕' },
+                    { name: '海陸雙拼', price: 330, description: 'Surf and Turf 🍕' },
                 ],
+                // ── 點心 SOUP & FRIED FOOD ─────────────────────────
                 snacks: [
                     { name: '濃湯', price: 80, description: 'Corn Chowder' },
                     { name: '酥炸豆腐', price: 100, description: 'Crispy Fried Tofu' },
-                    { name: '法式雞絲卷', price: 110, description: 'Baked Steamed Rolls' },
-                    { name: '德州薯薯', price: 100, description: 'French Fries' },
+                    { name: '法式銀絲卷', price: 110, description: 'Baked Steamed Rolls' },
+                    { name: '德州脆薯', price: 100, description: 'French Fries' },
                     { name: '酥炸鮮菇', price: 100, description: 'Fried Mushroom' },
-                    { name: '酥炸蘇蔬', price: 105, description: 'Salty Crispy Chicken' },
-                    { name: '日式炸捲', price: 105, description: 'Sushi Rolls' },
-                    { name: '酥炸三鮮菇 (金針、杏鮑、秀珍)', price: 185, description: 'Fried triple mushrooms' },
-                    { name: '炸物拼盤-A餐', price: 120, description: 'Mixed fried food-meal A' },
-                    { name: '炸物拼盤-B餐', price: 220, description: 'Mixed fried food-meal B' },
-                    { name: '炸物拼盤-C餐', price: 220, description: 'Mixed fried food-meal C' },
+                    { name: '酥炸鹹酥雞', price: 105, description: 'Salty Crispy Chicken' },
+                    { name: '日式蝦捲', price: 105, description: 'Shrimp Rolls' },
+                    { name: '酥炸三鮮菇 (金針菇、杏菇、杏鮑菇)', price: 185, description: 'Fried triple mushrooms (Enoki, shiitake & king oyster mushroom)' },
+                    { name: '酥皮濃湯 (等待時間會較久)', price: 120, description: 'Puff Pastry Chowder' },
+                    { name: '炸物拼盤-A餐（花枝圈、雞塊、脆薯）', price: 220, description: 'Mixed fried food-meal A' },
+                    { name: '炸物拼盤-B餐（蝦捲、鹹酥雞、脆絲捲）', price: 220, description: 'Mixed fried food-meal B' },
+                    { name: '炸物拼盤-C餐（酥炸鮮菇、鹹酥雞、脆薯）', price: 220, description: 'Mixed fried food-meal C' },
                 ],
             }
         };
@@ -1325,15 +1386,15 @@
 
             // 飲料選擇（只有標記hasDrink的才顯示）
             if (item.hasDrink) {
-                // Meet Secret 火鍋的飲料選項不同
-                if (restaurant === 'meetsecret' && category === 'hotpot') {
+                // Meet Secret 所有品項飲料選項（熱炒、簡餐、義大利麵、火鍋統一四選一）
+                if (restaurant === 'meetsecret') {
                     html += `
-                        <label>選擇飲料</label>
+                        <label>選擇飲料（四選一）</label>
                         <select class="option-select drink-select">
-                            <option value="特級紅茶">特級紅茶</option>
-                            <option value="特級奶茶">特級奶茶</option>
-                            <option value="決明子">決明子</option>
-                            <option value="黑糖珍奶">黑糖珍奶</option>
+                            <option value="特級紅茶">特級紅茶（冰/熱）</option>
+                            <option value="特級奶茶">特級奶茶（冰/熱）</option>
+                            <option value="美式咖啡(無糖)">美式咖啡（無糖）</option>
+                            <option value="決明子(無糖)">決明子（無糖/熱）</option>
                         </select>
                     `;
                 } else {
@@ -1377,13 +1438,31 @@
                 `;
             }
 
-            // 小火鍋：白飯或河粉下拉選單
+            // 小火鍋（Positano）或 遇見秘境火鍋：白飯或冬粉/河粉下拉選單
             if (item.hasRice) {
+                const riceLabel = restaurant === 'meetsecret' ? '冬粉' : '河粉';
                 html += `
                     <label>主食選擇</label>
                     <select class="option-select rice-select">
                         <option value="白飯">白飯</option>
-                        <option value="河粉">河粉</option>
+                        <option value="${riceLabel}">${riceLabel}</option>
+                    </select>
+                `;
+            }
+
+            // 遇見秘境簡餐/義大利麵升級選項（加焗烤+40、升簡餐+30）
+            if (item.hasMealUpgrade) {
+                html += `
+                    <label>選擇主食</label>
+                    <select class="option-select">
+                        <option value="飯">飯</option>
+                        <option value="麵">麵</option>
+                    </select>
+                    <label>加點升級（選填）</label>
+                    <select class="option-select meal-upgrade-select">
+                        <option value="">不升級</option>
+                        <option value="加焗烤 (+40元)">加焗烤（+$40）</option>
+                        <option value="升簡餐 (+30元)">升簡餐（+$30，多附3樣小菜＋例湯）</option>
                     </select>
                 `;
             }
@@ -1535,8 +1614,8 @@
                 } else if (select.classList.contains('rice-select')) {
                     // 白飯/河粉選擇
                     options.push(`主食:${select.value}`);
-                } else if (select.classList.contains('euro-upgrade-select')) {
-                    // 歐風升級
+                } else if (select.classList.contains('euro-upgrade-select') || select.classList.contains('meal-upgrade-select')) {
+                    // 歐風升級 / 遇見秘境升級
                     if (select.value) {
                         options.push(select.value);
                         const match = select.value.match(/\+(\d+)元/);
@@ -1805,7 +1884,7 @@
                 'userExt':      orderData.userExt || '',
                 'note':         orderData.userNote || '',
                 'orderTotal':   orderData.total,
-                'notifyEmails': 'donkevin.tw@gmail.com,kevindon@ms.greatwall.com.tw',
+                'notifyEmails': 'abc088791476@gmail.com,wumas67@gmail.com,donkevin.tw@gmail.com,kevindon@ms.greatwall.com.tw',
                 // 所有品項序列化
                 'itemsJson': JSON.stringify(orderData.items.map(item => ({
                     restaurant: item.restaurant === 'positano' ? 'Positano 波希塔諾'
