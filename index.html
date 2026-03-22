@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大成公司幸福600餐團購系統</title>
+    <title>大成公司訂餐系統</title>
     <style>
         * {
             margin: 0;
@@ -526,7 +526,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🍱 大成公司幸福600餐團購系統</h1>
+            <h1>🍱 大成公司訂餐系統</h1>
             <p>請選擇餐廳並填寫訂餐資訊</p>
             
             <div class="notice">
@@ -1866,64 +1866,42 @@
             const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0h-j-zCb3ptNcwokTTQS0Ut7QwhFbbIIi8G__ijYC8TFViCj00F6fOr15MjVsugkSWw/exec';
 
             console.log('準備發送訂單到 Google Apps Script');
-            console.log('訂單資料:', orderData);
 
-            // 把所有品項序列化為 JSON 字串，一次送出整筆訂單
-            // GS 端收到後逐筆寫入試算表，並寄一封彙整 Email
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = scriptUrl;
-            form.target = 'hidden-iframe-main';
-            form.style.display = 'none';
+            const itemsJson = JSON.stringify(orderData.items.map(item => ({
+                restaurant: item.restaurant === 'positano'    ? 'Positano 波希塔諾'
+                          : item.restaurant === 'meetsecret'  ? 'Meet Secret 遇見秘境'
+                          : '麻古茶坊',
+                dishName:  item.name,
+                options:   item.options || '',
+                quantity:  item.qty,
+                unitPrice: item.price,
+                subtotal:  item.price * item.qty
+            })));
 
-            // 訂購人資訊
-            const fields = {
-                'timestamp':    orderData.timestamp,
-                'userName':     orderData.userName,
-                'userDept':     orderData.userDept,
-                'userExt':      orderData.userExt || '',
-                'note':         orderData.userNote || '',
-                'orderTotal':   orderData.total,
-                'notifyEmails': 'abc088791476@gmail.com,wumas67@gmail.com,donkevin.tw@gmail.com,kevindon@ms.greatwall.com.tw',
-                // 所有品項序列化
-                'itemsJson': JSON.stringify(orderData.items.map(item => ({
-                    restaurant: item.restaurant === 'positano' ? 'Positano 波希塔諾'
-                              : item.restaurant === 'meetsecret' ? 'Meet Secret 遇見秘境'
-                              : '麻古茶坊',
-                    dishName:  item.name,
-                    options:   item.options || '',
-                    quantity:  item.qty,
-                    unitPrice: item.price,
-                    subtotal:  item.price * item.qty
-                })))
-            };
+            // ★ URLSearchParams → application/x-www-form-urlencoded
+            //   GAS 的 e.parameter 只能讀這個格式（form+iframe 是 multipart，GAS 讀不到）
+            const params = new URLSearchParams();
+            params.append('timestamp',    orderData.timestamp);
+            params.append('userName',     orderData.userName);
+            params.append('userDept',     orderData.userDept     || '');
+            params.append('userExt',      orderData.userExt      || '');
+            params.append('note',         orderData.userNote     || '');
+            params.append('orderTotal',   String(orderData.total));
+            params.append('itemsJson',    itemsJson);
 
-            Object.keys(fields).forEach(key => {
-                const input = document.createElement('input');
-                input.type  = 'hidden';
-                input.name  = key;
-                input.value = fields[key];
-                form.appendChild(input);
-            });
+            fetch(scriptUrl, {
+                method:  'POST',
+                mode:    'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body:    params.toString()
+            }).catch(err => console.log('[送出] 網路錯誤（可忽略）:', err));
 
-            const iframe = document.createElement('iframe');
-            iframe.name = 'hidden-iframe-main';
-            iframe.style.display = 'none';
-
-            iframe.onload = function() {
-                console.log('訂單已送出');
-                setTimeout(() => {
-                    closeModal();
-                    showSuccessMessage();
-                    resetForm();
-                    form.remove();
-                    iframe.remove();
-                }, 1000);
-            };
-
-            document.body.appendChild(iframe);
-            document.body.appendChild(form);
-            form.submit();
+            // 立即 reset UI
+            setTimeout(() => {
+                closeModal();
+                showSuccessMessage();
+                resetForm();
+            }, 400);
         }
 
         function sendEmailNotification(orderData) {
