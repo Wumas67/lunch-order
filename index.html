@@ -1865,8 +1865,6 @@
         function sendToGoogleForm(orderData) {
             const scriptUrl = 'https://script.google.com/macros/s/AKfycbz0h-j-zCb3ptNcwokTTQS0Ut7QwhFbbIIi8G__ijYC8TFViCj00F6fOr15MjVsugkSWw/exec';
 
-            console.log('[送出] 準備送出訂單');
-
             const itemsJson = JSON.stringify(orderData.items.map(item => ({
                 restaurant: item.restaurant === 'positano'    ? 'Positano 波希塔諾'
                           : item.restaurant === 'meetsecret'  ? 'Meet Secret 遇見秘境'
@@ -1878,22 +1876,10 @@
                 subtotal:  item.price * item.qty
             })));
 
-            // ★ 用隱藏 iframe + form 送出（POST application/x-www-form-urlencoded）
-            //   這是唯一讓 GAS e.parameter 正確接收的方式
-            //   fetch + no-cors 無法自訂 Content-Type，body 會以 text/plain 送出
-            const iframeName = 'gas_iframe_' + Date.now();
-            const iframe = document.createElement('iframe');
-            iframe.name = iframeName;
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = scriptUrl;
-            form.target = iframeName;
-            form.style.display = 'none';
-
-            const fields = {
+            // ★ 送出方式：fetch + no-cors + text/plain body（JSON 字串）
+            //   GAS 用 e.postData.contents 讀取，再 JSON.parse 解析
+            //   這是目前跨域呼叫 GAS doPost 最可靠的方式
+            const payload = JSON.stringify({
                 timestamp:  orderData.timestamp,
                 userName:   orderData.userName,
                 userDept:   orderData.userDept  || '',
@@ -1901,25 +1887,15 @@
                 note:       orderData.userNote  || '',
                 orderTotal: String(orderData.total),
                 itemsJson:  itemsJson
-            };
-
-            Object.keys(fields).forEach(key => {
-                const inp = document.createElement('input');
-                inp.type  = 'hidden';
-                inp.name  = key;
-                inp.value = fields[key];
-                form.appendChild(inp);
             });
 
-            document.body.appendChild(form);
-            form.submit();
-            console.log('[送出] form.submit() 已執行');
+            fetch(scriptUrl, {
+                method: 'POST',
+                mode:   'no-cors',
+                body:   payload          // text/plain body，GAS 用 e.postData.contents 讀
+            }).catch(err => console.log('[送出] 錯誤（可忽略）:', err));
 
-            // 清理 DOM（延遲確保 submit 完成）
-            setTimeout(() => {
-                form.remove();
-                iframe.remove();
-            }, 5000);
+            console.log('[送出] 已送出，userName=' + orderData.userName);
 
             // 立即 reset UI
             setTimeout(() => {
@@ -1931,8 +1907,8 @@
 
         function sendEmailNotification(orderData) {
             // Email 通知已整合在 Google Apps Script 中
-            // 收件人：donkevin.tw@gmail.com, kevindon@ms.greatwall.com.tw,wumas67@gmail.com
-            console.log('Email 通知將由 Google Apps Script 自動發送到：donkevin.tw@gmail.com, kevindon@ms.greatwall.com.tw,wumas67@gmail.com');
+            // 收件人：donkevin.tw@gmail.com, kevindon@ms.greatwall.com.tw
+            console.log('Email 通知將由 Google Apps Script 自動發送到：donkevin.tw@gmail.com, kevindon@ms.greatwall.com.tw');
         }
 
         function generateEmailBody(orderData) {
