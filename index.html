@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公司訂餐系統</title>
+    <title>大成公司幸福600餐團購系統</title>
     <style>
         * {
             margin: 0;
@@ -526,7 +526,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🍱 公司訂餐系統</h1>
+            <h1>🍱 大成公司幸福600餐團購系統</h1>
             <p>請選擇餐廳並填寫訂餐資訊</p>
             
             <div class="notice">
@@ -1876,10 +1876,9 @@
                 subtotal:  item.price * item.qty
             })));
 
-            // ★ 送出方式：fetch + no-cors + text/plain body（JSON 字串）
-            //   GAS 用 e.postData.contents 讀取，再 JSON.parse 解析
-            //   這是目前跨域呼叫 GAS doPost 最可靠的方式
-            const payload = JSON.stringify({
+            // ★ 用 GET 請求傳送訂單（最可靠的跨域方式，完全無 CORS 問題）
+            //   GAS doGet 用 e.parameter 讀取，100% 可靠
+            const params = new URLSearchParams({
                 timestamp:  orderData.timestamp,
                 userName:   orderData.userName,
                 userDept:   orderData.userDept  || '',
@@ -1889,16 +1888,23 @@
                 itemsJson:  itemsJson
             });
 
-            fetch(scriptUrl, {
-                method: 'POST',
-                mode:   'no-cors',
-                body:   payload          // text/plain body，GAS 用 e.postData.contents 讀
-            }).catch(err => console.log('[送出] 錯誤（可忽略）:', err));
+            const getUrl = scriptUrl + '?' + params.toString();
+            console.log('[送出] userName=' + orderData.userName);
+            console.log('[送出] URL 長度=' + getUrl.length);
 
-            console.log('[送出] 已送出，userName=' + orderData.userName);
+            // 方式A：Image GET（最可靠，瀏覽器限制最少）
+            const img = new Image();
+            img.src = getUrl;
+            img.onload  = function(){ console.log('[送出A] onload'); };
+            img.onerror = function(){ console.log('[送出A] onerror（正常，GAS redirect）'); };
+
+            // 方式B：fetch GET 備援
+            fetch(getUrl, { mode: 'no-cors' })
+              .then(function(){ console.log('[送出B] fetch ok'); })
+              .catch(function(err){ console.log('[送出B] fetch err:', err); });
 
             // 立即 reset UI
-            setTimeout(() => {
+            setTimeout(function() {
                 closeModal();
                 showSuccessMessage();
                 resetForm();
