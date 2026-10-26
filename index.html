@@ -1757,31 +1757,27 @@
             }
 
             const name = document.getElementById('userName').value.trim();
-            const dept = document.getElementById('userDept').value.trim();
-            const ext = document.getElementById('userExt').value.trim();
-            const note = document.getElementById('userNote').value.trim();
-            const restaurantNames = {
-                positano: 'Positano 波希塔諾',
-                meetsecret: 'Meet Secret 遇見秘境',
-                maku: '麻古茶坊'
-            };
-            const lines = ['【訂餐系統－訂單】'];
-            if (name) lines.push('訂購人：' + name);
-            if (dept) lines.push('部門：' + dept);
-            if (ext) lines.push('分機：' + ext);
-            lines.push('');
+            const lines = cart.map(function(item) {
+                const amount = '$' + (item.price * item.qty);
+                if (item.restaurant === 'maku') {
+                    const parts = (item.options || '').split(' / ');
+                    const size = parts[0] || '';
+                    const sweetness = (parts[1] || '').replace(/\([^)]*\)/g, '')
+                        .replace('一分糖', '1分糖').replace('三分糖', '3分糖')
+                        .replace('八分糖', '8分糖');
+                    const ice = (parts[2] || '').replace(/\([^)]*\)/g, '');
+                    const toppings = parts.slice(3).map(function(part) {
+                        return part.replace(/\(\+\$\d+\)/g, '').replace('加料:', '加');
+                    }).join('、');
+                    const drink = item.name + (size ? '（' + size + '）' : '')
+                        + (toppings ? '（' + toppings + '）' : '');
+                    return name + ':' + drink + '-' + ice + '-' + sweetness
+                        + '--' + item.qty + '杯--' + amount;
+                }
 
-            cart.forEach(function(item, index) {
-                lines.push((index + 1) + '. ' + (restaurantNames[item.restaurant] || item.restaurant) + '｜' + item.name);
-                if (item.options) lines.push('   規格／選項：' + item.options);
-                lines.push('   數量：' + item.qty + '　小計：$' + (item.price * item.qty));
+                return name + ':' + item.name + (item.options ? '-' + item.options : '')
+                    + '--' + item.qty + '份--' + amount;
             });
-
-            const total = cart.reduce(function(sum, item) {
-                return sum + item.price * item.qty;
-            }, 0);
-            lines.push('', '總計：$' + total);
-            if (note) lines.push('備註：' + note);
 
             textArea.value = lines.join('\n');
             copyButton.disabled = false;
