@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大成公司幸福600餐團購系統</title>
+    <title>訂餐系統</title>
     <style>
         * {
             margin: 0;
@@ -497,6 +497,57 @@
             font-weight: 600;
         }
 
+        .line-order-box {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .line-order-box h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .line-order-box p {
+            color: #555;
+            margin-bottom: 12px;
+        }
+
+        .line-order-box textarea {
+            width: 100%;
+            min-height: 180px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font: inherit;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .line-order-box button {
+            margin-top: 12px;
+            padding: 12px 20px;
+            border: 0;
+            border-radius: 8px;
+            background: #06c755;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .line-order-box button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .copy-status {
+            margin-left: 12px;
+            color: #167438;
+        }
+
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -526,7 +577,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🍱 大成公司幸福600餐團購系統</h1>
+            <h1>訂餐系統</h1>
             <p>請選擇餐廳並填寫訂餐資訊</p>
             
             <div class="notice">
@@ -555,20 +606,20 @@
         </div>
 
         <div class="restaurant-tabs">
-            <button class="tab active" onclick="switchRestaurant('positano')">
+            <button class="tab" onclick="switchRestaurant('positano')">
                 🍝 Positano 波希塔諾異國料理
             </button>
             <button class="tab" onclick="switchRestaurant('meetsecret')">
                 🥗 Meet Secret 遇見秘境素食餐廳
             </button>
-            <button class="tab" onclick="switchRestaurant('maku')">
+            <button class="tab active" onclick="switchRestaurant('maku')">
                 🧋 麻古茶坊
             </button>
         </div>
 
         <div class="main-content">
             <!-- Positano 菜單 -->
-            <div id="positano-menu" class="menu-section active">
+            <div id="positano-menu" class="menu-section">
                 <!-- 焗烤 -->
                 <div class="category">
                     <h3>🧀 焗烤</h3>
@@ -664,7 +715,7 @@
             </div>
 
             <!-- 麻古茶坊 菜單 -->
-            <div id="maku-menu" class="menu-section">
+            <div id="maku-menu" class="menu-section active">
                 <!-- 飲中甜品 -->
                 <div class="category">
                     <h3>🍓 飲中甜品 DRINKING DESSERT</h3>
@@ -725,6 +776,15 @@
                 <button class="submit-btn" onclick="submitOrder()" disabled>送出訂單</button>
             </div>
         </div>
+        <section class="line-order-box" aria-labelledby="lineOrderTitle">
+            <h2 id="lineOrderTitle">複製訂單到 LINE</h2>
+            <p>確認下方訂單文字後，按「複製訂單」，再貼到 LINE 對話中。</p>
+            <textarea id="lineOrderText" aria-label="可複製的訂單文字" readonly placeholder="加入餐點後，這裡會顯示訂單文字。"></textarea>
+            <div>
+                <button id="copyOrderBtn" type="button" onclick="copyOrderText()" disabled>複製訂單</button>
+                <span id="copyStatus" class="copy-status" role="status" aria-live="polite"></span>
+            </div>
+        </section>
     </div>
 
     <!-- 確認對話框 -->
@@ -1113,11 +1173,16 @@
         const makuToppings20 = ['芝芝'];
 
         let cart = [];
-        let currentRestaurant = 'positano';
+        let isSubmitting = false;
+        let currentRestaurant = 'maku';
 
         // 初始化菜單
         window.onload = function() {
             renderMenu();
+            ['userName', 'userDept', 'userExt', 'userNote'].forEach(function(id) {
+                document.getElementById(id).addEventListener('input', updateLineOrderText);
+            });
+            updateLineOrderText();
         };
 
         function renderMenu() {
@@ -1679,6 +1744,70 @@
             }
         }
 
+        function updateLineOrderText() {
+            const textArea = document.getElementById('lineOrderText');
+            const copyButton = document.getElementById('copyOrderBtn');
+            const copyStatus = document.getElementById('copyStatus');
+            copyStatus.textContent = '';
+
+            if (cart.length === 0) {
+                textArea.value = '';
+                copyButton.disabled = true;
+                return;
+            }
+
+            const name = document.getElementById('userName').value.trim();
+            const dept = document.getElementById('userDept').value.trim();
+            const ext = document.getElementById('userExt').value.trim();
+            const note = document.getElementById('userNote').value.trim();
+            const restaurantNames = {
+                positano: 'Positano 波希塔諾',
+                meetsecret: 'Meet Secret 遇見秘境',
+                maku: '麻古茶坊'
+            };
+            const lines = ['【訂餐系統－訂單】'];
+            if (name) lines.push('訂購人：' + name);
+            if (dept) lines.push('部門：' + dept);
+            if (ext) lines.push('分機：' + ext);
+            lines.push('');
+
+            cart.forEach(function(item, index) {
+                lines.push((index + 1) + '. ' + (restaurantNames[item.restaurant] || item.restaurant) + '｜' + item.name);
+                if (item.options) lines.push('   規格／選項：' + item.options);
+                lines.push('   數量：' + item.qty + '　小計：$' + (item.price * item.qty));
+            });
+
+            const total = cart.reduce(function(sum, item) {
+                return sum + item.price * item.qty;
+            }, 0);
+            lines.push('', '總計：$' + total);
+            if (note) lines.push('備註：' + note);
+
+            textArea.value = lines.join('\n');
+            copyButton.disabled = false;
+        }
+
+        async function copyOrderText() {
+            const textArea = document.getElementById('lineOrderText');
+            const status = document.getElementById('copyStatus');
+            if (!textArea.value) return;
+
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(textArea.value);
+                } else {
+                    textArea.focus();
+                    textArea.select();
+                    if (!document.execCommand('copy')) throw new Error('無法複製');
+                }
+                status.textContent = '已複製，可以貼到 LINE。';
+            } catch (err) {
+                status.textContent = '自動複製失敗，請選取文字後手動複製。';
+                textArea.focus();
+                textArea.select();
+            }
+        }
+
         function updateCartDisplay() {
             const cartItems = document.getElementById('cartItems');
             const cartTotal = document.getElementById('cartTotal');
@@ -1689,6 +1818,7 @@
                 cartItems.innerHTML = '<div class="empty-cart">尚未選擇餐點</div>';
                 cartTotal.style.display = 'none';
                 submitBtn.disabled = true;
+                updateLineOrderText();
                 return;
             }
             
@@ -1754,6 +1884,7 @@
             totalAmount.textContent = `$${total}`;
             cartTotal.style.display = 'flex';
             submitBtn.disabled = false;
+            updateLineOrderText();
         }
 
         // 從購物車刪除項目
@@ -1859,7 +1990,30 @@
                 timestamp: new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })
             };
             
-            sendToGoogleForm(orderData);
+            if (isSubmitting) return;
+            isSubmitting = true;
+            const confirmBtn = document.querySelector('#confirmModal .modal-btn.confirm');
+            const cancelBtn = document.querySelector('#confirmModal .modal-btn.cancel');
+            confirmBtn.disabled = true;
+            cancelBtn.disabled = true;
+            confirmBtn.textContent = '傳送中…';
+
+            sendToGoogleForm(orderData)
+                .then(function() {
+                    closeModal();
+                    showSuccessMessage();
+                    resetForm();
+                })
+                .catch(function(err) {
+                    console.error('[送出] 網路請求失敗', err);
+                    alert('無法傳送訂單，請檢查網路並稍後重試。原訂單內容仍保留。');
+                })
+                .finally(function() {
+                    isSubmitting = false;
+                    confirmBtn.disabled = false;
+                    cancelBtn.disabled = false;
+                    confirmBtn.textContent = '確認送出';
+                });
         }
 
         function sendToGoogleForm(orderData) {
@@ -1889,26 +2043,8 @@
             });
 
             const getUrl = scriptUrl + '?' + params.toString();
-            console.log('[送出] userName=' + orderData.userName);
-            console.log('[送出] URL 長度=' + getUrl.length);
-
-            // 方式A：Image GET（最可靠，瀏覽器限制最少）
-            const img = new Image();
-            img.src = getUrl;
-            img.onload  = function(){ console.log('[送出A] onload'); };
-            img.onerror = function(){ console.log('[送出A] onerror（正常，GAS redirect）'); };
-
-            // 方式B：fetch GET 備援
-            fetch(getUrl, { mode: 'no-cors' })
-              .then(function(){ console.log('[送出B] fetch ok'); })
-              .catch(function(err){ console.log('[送出B] fetch err:', err); });
-
-            // 立即 reset UI
-            setTimeout(function() {
-                closeModal();
-                showSuccessMessage();
-                resetForm();
-            }, 400);
+            // 只送出一次；no-cors 無法讀取後端回覆，因此畫面不宣稱已成功入帳。
+            return fetch(getUrl, { mode: 'no-cors', cache: 'no-store' });
         }
 
         function sendEmailNotification(orderData) {
@@ -1950,10 +2086,9 @@
             const successDiv = document.createElement('div');
             successDiv.className = 'success-message';
             successDiv.innerHTML = `
-                <h2>✅ 訂單已送出！</h2>
-                <p>您的訂單已成功送出並記錄到系統中。</p>
-                <p>負責人將會收到 Email 通知。</p>
-                <p>感謝您的訂購！</p>
+                <h2>📨 訂單請求已傳送</h2>
+                <p>請以訂單確認信或管理員回覆為準。</p>
+                <p>如果沒有收到確認信，請聯絡負責人核對訂單。</p>
             `;
             container.insertBefore(successDiv, container.firstChild);
             
