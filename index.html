@@ -1779,6 +1779,16 @@
                     + '--' + item.qty + '份--' + amount;
             });
 
+            const totalCups = cart.reduce(function(sum, item) {
+                return sum + (item.restaurant === 'maku' ? item.qty : 0);
+            }, 0);
+            const totalAmount = cart.reduce(function(sum, item) {
+                return sum + item.price * item.qty;
+            }, 0);
+            lines.push('');
+            if (totalCups > 0) lines.push('總杯數:' + totalCups + '杯');
+            lines.push('總金額:$' + totalAmount + '元');
+
             textArea.value = lines.join('\n');
             copyButton.disabled = false;
         }
